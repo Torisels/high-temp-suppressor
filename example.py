@@ -1,11 +1,17 @@
 import rotary_encoder
+import step
+from step import Stepper
 
-last = 0
+encoder = rotary_encoder.Encoder(12, 16)
+stepper = Stepper(step.FULL_STEP, 15, 13, 14, 2, delay=2)
 
-e = rotary_encoder.Encoder(12, 16)
 
 while True:  # Infinite loop
-    value = e.get_value()  # Get rotary encoder value
-    if value != last:  # If there is a new value do
-        last = value
-        print(value)  # In this case it prints the value
+    if encoder.diff > 0:
+        print(encoder.diff)
+        stepper.step(85, 1)
+        encoder.diff -= 1
+    elif encoder.diff < 0:
+        print(encoder.diff)
+        stepper.step(85, -1)
+        encoder.diff += 1

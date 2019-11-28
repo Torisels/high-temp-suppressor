@@ -60,7 +60,7 @@ class Stepper:
 
 
 def rn(times=FULL_ROTATION_FULL_STEP, delay=2, dir=1):
-    s1 = Stepper(FULL_STEP, 13, 12, 14, 2, delay=delay)
+    s1 = Stepper(FULL_STEP, 15, 13, 14, 2, delay=delay)
     start = time.time()
     s1.step(times, dir)
     end = time.time()
