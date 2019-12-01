@@ -4,7 +4,6 @@ from machine import Pin
 import utime
 import time
 
-
 LOW = 0
 HIGH = 1
 FULL_ROTATION_FULL_STEP = int(4075.7728395061727 / 2)  # http://www.jangeox.be/2013/10/stepper-motor-28byj-48_25.html
@@ -30,13 +29,20 @@ FULL_STEP = [
 
 
 class Stepper:
-    def __init__(self, mode, pin1, pin2, pin3, pin4, delay=2):
+    def __init__(self, mode, pin1, pin2, pin3, pin4, pin_emergency_stop, delay=2):
         self.mode = mode
         self.pins = [Pin(pin1, Pin.OUT), Pin(pin2, Pin.OUT), Pin(pin3, Pin.OUT), Pin(pin4, Pin.OUT)]
         self.delay = delay  # Recommend 10+ for FULL_STEP, 1 is OK for HALF_STEP
 
+        self.pin_e_stop = Pin(pin_emergency_stop, Pin.IN, Pin.PULL_UP)
+        self.pin_e_stop.irq(trigger=Pin.IRQ_FALLING, handler=self.handle_emergency_stop)
+        self.allowed = True
         # Initialize all to 0
         self.reset()
+
+    def handle_emergency_stop(self):
+        if self.allowed is True:
+            self.allowed = False
 
     def step(self, count, direction=1):
         """Rotate count steps. direction = -1 means backwards"""
@@ -65,4 +71,3 @@ def rn(times=FULL_ROTATION_FULL_STEP, delay=2, dir=1):
     s1.step(times, dir)
     end = time.time()
     print(end - start)
-

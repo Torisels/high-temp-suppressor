@@ -11,3 +11,11 @@ sterowanym przez sterownik ULN2003 w trybie FULL STEP silnik ma następujące pa
  * czas pełnego obrotu wynosi 4.2s
  * silnik na pełen obrót potrzebuje niecałe 2038 kroków (2037.886), co daje dokładność 0.1766 stopnia.
  * optymalne opóźnienie pomiędzy krokami wynosi 2ms
+ 
+ 
+
+#### Żaluzje:
+W wyniku testowania i oględzin mechanizmu żaluzji najlepszym rozwiązaniem sterowania mechanizmem pochylania piór
+będzie bezpośrednie połączenie wału żaluzji wraz z silnikiem poprzez przekładnię _4-6:1_
+
+Średnica wału żaluzji wynosi 3,6mm, z wcięciem 2,6mm. 
