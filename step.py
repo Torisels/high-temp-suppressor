@@ -43,6 +43,7 @@ class Stepper:
     def handle_emergency_stop(self):
         if self.allowed is True:
             self.allowed = False
+            self.reset()
 
     def step(self, count, direction=1):
         """Rotate count steps. direction = -1 means backwards"""
@@ -55,9 +56,13 @@ class Stepper:
         for count, remainder in iterations:
             for _ in range(count):
                 for bits in bits_list[:remainder]:
-                    for bit, pin in zip(bits, self.pins):
-                        pin.value(bit)
-                    utime.sleep_ms(self.delay)
+                    if self.allowed:
+                        for bit, pin in zip(bits, self.pins):
+                            pin.value(bit)
+                        utime.sleep_ms(self.delay)
+                    else:
+                        print("moving not allowed!")
+                        self.reset()
         self.reset()
 
     def reset(self):
