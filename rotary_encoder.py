@@ -1,6 +1,6 @@
 from machine import Pin
 from machine import Timer
-
+import uasyncio as asyncio
 
 
 
