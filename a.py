@@ -1,24 +1,8 @@
-#!/usr/bin/env micropython
-
-import machine
 import network
 import tinyweb
 import gc
 import step
 
-# stepper = step.Stepper.get_instance()
-import uasyncio as asyncio
-
-# PINs available for use
-pins = {4: 'D2',
-        5: 'D1',
-        12: 'D6',
-        13: 'D7',
-        14: 'D5',
-        15: 'D8',
-        16: 'D0'}
-
-# Create web server
 app = tinyweb.server.webserver()
 
 
@@ -55,21 +39,43 @@ async def files_images(req, resp, fn):
                          content_type='image/jpeg')
 
 
-@app.route('/api/stepper/<st>')
+@app.route('/api/set_steps/<st>')
 async def move(req, resp, st):
-    if st:
-        step.steps = int(st)
-    await resp.start_html()
-    await resp.send('<html><h1>{}</h1></html>'.format(step.steps))
+    try:
+        st = int(st)
+        step.steps = st
+        msg = "{success: %s, value: %d}" % ("True", st)
+    except ValueError:
+        msg = "{success: %s, value: %d}" % ("False", None)
+    resp.add_header("Content-Type", "application/json")
+    gc.collect()
+    await resp._send_headers()
+    await resp.send(msg)
 
 
-@app.route('/api/get_steps')
-async def move(req: tinyweb.server.request, resp):
-    # print(req.method)
-    # print(req.path)
-    # print(req)
-    await resp.start_html()
-    await resp.send('<html><h1>{}Left: {}</h1></html>'.format("x", step.steps))
+@app.route('/api/get_status')
+async def status(req: tinyweb.server.request, resp: tinyweb.server.response):
+    resp.add_header("Content-Type", "application/json")
+    await resp._send_headers()
+    gc.collect()
+    await resp.send("{" + 'status: {}, steps: {}'.format(step.Stepper.get_instance().allowed, step.steps) + "}")
+
+
+@app.route('/api/set_status/<val>')
+async def move(req: tinyweb.server.request, resp: tinyweb.server.response, val):
+    try:
+        v = int(val)
+        if v:
+            step.Stepper.get_instance().allowed = True
+        else:
+            step.Stepper.get_instance().allowed = False
+    except ValueError:
+        pass
+
+    resp.add_header("Content-Type", "application/json")
+    await resp._send_headers()
+    await resp.send("{" + 'status: {}'.format( step.Stepper.get_instance().allowed) + "}")
+    gc.collect()
 
 
 # RESTAPI: System status
@@ -89,51 +95,6 @@ class Status():
         return {'memory': mem, 'network': net}
 
 
-# RESTAPI: GPIO status
-class GPIOList():
-
-    def get(self, data):
-        res = []
-        for p, d in pins.items():
-            val = machine.Pin(p).value()
-            res.append({'gpio': p, 'nodemcu': d, 'value': val})
-        return {'pins': res}
-
-
-# RESTAPI: GPIO controller: turn PINs on/off
-class GPIO():
-
-    def put(self, data, pin):
-        # Check input parameters
-        if 'value' not in data:
-            return {'message': '"value" is requred'}, 400
-        # Check pin
-        pin = int(pin)
-        if pin not in pins:
-            return {'message': 'no such pin'}, 404
-        # Change state
-        val = int(data['value'])
-        machine.Pin(pin).value(val)
-        return {'message': 'changed', 'value': val}
-
-
-class StepperController:
-    def get(self, data):
-        global stepper
-        if "steps" in data:
-            # stepper.steps = int(data["steps"])
-            global steps
-            step.steps = int(data["steps"])
-        return {"scheduled_steps": step.steps}, 200
-
-    async def post(self, data):
-        global stepper
-
-        stepper.steps = int(data["steps"])
-        # await asyncio.sleep_ms(1)
-        return {"scheduled_steps": data["steps"]}, 200
-
-
 def run():
     # ap = network.WLAN(network.AP_IF)
     # ap.active(True)
@@ -144,8 +105,8 @@ def run():
     #     machine.Pin(p, machine.Pin.OUT)
 
     app.add_resource(Status, '/api/status')
-    app.add_resource(GPIOList, '/api/gpio')
-    app.add_resource(GPIO, '/api/gpio/<pin>')
+    # app.add_resource(GPIOList, '/api/gpio')
+    # app.add_resource(GPIO, '/api/gpio/<pin>')
     # app.add_resource(StepperController, '/api/stepper')
     s = step.Stepper.get_instance()
     app.run(host='0.0.0.0', port=8081)

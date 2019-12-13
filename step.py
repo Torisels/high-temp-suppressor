@@ -79,19 +79,14 @@ class Stepper:
     async def loop(self):
         while True:
             global steps
-            if steps == 0:
+            if steps == 0 or self.allowed is False:
                 await asyncio.sleep_ms(500)
                 self.reset()
-            elif steps > 0:
-                # self.move_one_step(1)
-                # steps -= 1
-                # await asyncio.sleep_ms(10)
-                await self.step(steps, 1)
-                steps = 0
-            else:
-                self.move_one_step(-1)
-                steps += 1
-                await asyncio.sleep_ms(10)
+            elif self.allowed:
+                if steps > 0:
+                    await self.step(steps, 1)
+                else:
+                    await self.step(steps, -1)
 
     def move_one_step(self, direction):
         if self.allowed:
@@ -127,14 +122,17 @@ class Stepper:
                 for bits in bits_list[:remainder]:
                     if self.allowed:
                         global steps
-                        steps -= 1
+                        if direction == 1:
+                            steps -= 1
+                        else:
+                            steps += 1
                         # print("Moving one step {} steps left.".format(steps))
                         for bit, pin in zip(bits, self.pins):
                             pin.value(bit)
+                        await asyncio.sleep_ms(self.delay + 1)
                     else:
-                        # print("moving not allowed!")
                         self.reset()
-                    await asyncio.sleep_ms(self.delay + 3)
+                        return False
         self.reset()
 
     async def mv_four_steps(self, direction=1):
