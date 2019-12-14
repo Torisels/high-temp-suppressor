@@ -43,8 +43,8 @@ async def files_images(req, resp, fn):
 async def move(req, resp, st):
     try:
         st = int(st)
-        step.steps = st
-        msg = "{success: %s, value: %d}" % ("True", st)
+        step.Stepper.get_instance().steps = st
+        msg = "{success: %s, value: %d}" % ("True", step.Stepper.get_instance().steps )
     except ValueError:
         msg = "{success: %s, value: %d}" % ("False", None)
     resp.add_header("Content-Type", "application/json")
@@ -58,7 +58,7 @@ async def status(req: tinyweb.server.request, resp: tinyweb.server.response):
     resp.add_header("Content-Type", "application/json")
     await resp._send_headers()
     gc.collect()
-    await resp.send("{" + 'status: {}, steps: {}'.format(step.Stepper.get_instance().allowed, step.steps) + "}")
+    await resp.send("{" + 'status: {}, steps: {}'.format(step.Stepper.get_instance().allowed, step.Stepper.get_instance().steps) + "}")
 
 
 @app.route('/api/set_status/<val>')
