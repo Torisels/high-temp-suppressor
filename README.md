@@ -25,7 +25,7 @@ Rozważyliśmy kilka opcji montażu silnika, początkowo planowany był montaż 
 umożliwiłoby sterowanie.
 
 Cały natywny mechanizm do regulacji nachylenia żaluzji wraz z przekłądnią został jednak zdemontowany,
-ponieważ w wyniku testowania i oględzin mechanizmu najlepszym rozwiązaniem będzie 
+ponieważ w wyniku testowania i oględzin mechanizmu najlepszym rozwiązaniem okazało się 
 bezpośrednie połączenie wału żaluzji wraz z silnikiem poprzez przekładnię _4:1_
 
 Różne testy wykazały, iż najlepiej skorzystać z przekładni planetarnej
