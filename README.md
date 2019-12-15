@@ -15,15 +15,25 @@ sterowanym przez sterownik ULN2003 w trybie FULL STEP silnik ma następujące pa
  
 
 #### Żaluzje:
-W wyniku testowania i oględzin mechanizmu żaluzji najlepszym rozwiązaniem sterowania mechanizmem pochylania piór
-będzie bezpośrednie połączenie wału żaluzji wraz z silnikiem poprzez przekładnię _4:1_
+Głównym założeniem przy doborze żaluzji było posiadanie wału odpowiedniego do takiej modyfikacji, która pozwoliłaby
+użyć silnika krokowego do regulacji nachylenia piór żaluzji. 
+
+Zakupiona żaluzja ma _x_ mm długości.
+
+Rozważyliśmy kilka opcji montażu silnika, początkowo planowany był montaż wewnątrz ramy, 
+łącząc oś silnika bezpośrednio z elementem do ręcznej regulacji położonego pod kątem 90 stopni do wału 
+umożliwiłoby sterowanie.
+
+Cały natywny mechanizm do regulacji nachylenia żaluzji wraz z przekłądnią został jednak zdemontowany,
+ponieważ w wyniku testowania i oględzin mechanizmu najlepszym rozwiązaniem okazało się 
+bezpośrednie połączenie wału żaluzji wraz z silnikiem poprzez przekładnię _4:1_
 
 Różne testy wykazały, iż najlepiej skorzystać z przekładni planetarnej
 o wspomnianym wyżej przełożeniu _4:1_.
 
 Przekładnia użyta w projekcie pochodzi z [Thingiverse](https://www.thingiverse.com/thing:3642542).
 Element o nazwie _planet-carrier.stl_ został zmodyfikowany. 
-W jego osi dodano do tuleję, która swoim kształtem odpowiada kształtowi wału żaluzji, przez co może swobodnie się z nim połączyć.
+W jego osi dodano tuleję, która swoim kształtem odpowiada kształtowi wału żaluzji, przez co może swobodnie się z nim połączyć.
 
 Przy zastosowaniu powyższej przekładni na jeden obrót wału żaluzji przypadają *8152* kroki silnika krokowego (8151.5).
 
@@ -36,3 +46,21 @@ Daje to przelicznik 1 puls = 2038/4 kroków => 1 puls = 509 kroków
 
 
 Średnica wału żaluzji wynosi 3,6mm, z wcięciem 2,6mm. 
+
+
+
+
+#### Rama:
+Wszystkie elementy wykorzystane do produkcji ramy pochodzą ze sklepu Leroy Merlin.
+
+Materiał użyty do wytworzenia ramy to płyta wiórowa o szerokości _x_ mm, 
+została wybrana ponieważ jest lekka, tania, dość trwała i sztywna.
+
+Wymiary ramy dopasowane zostały do długości uprzednio kupionej żaluzji.
+Cała rama ma wymiary _x_ mm (wysokość) na _y_ mm (szerokość) na _z_ mm (długość).
+
+Poglądowy projekt ramy z wymiarami został przekazany pracownikowi sklepu, 
+który przy użyciu odpowiednich narzędzi dociął płytę wiórową do pożądanych rozmiarów,
+a do połączenia płyt użył konfirmatów do mebli o długości _63_ mm.
+
+Elementy podtrzymujące żaluzję zostały zamontowane po złożeniu ramy, za pomocą zwykłych wkrętów do drewna.
