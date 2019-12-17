@@ -2,6 +2,7 @@ import network
 import tinyweb
 import gc
 import step
+import json
 
 app = tinyweb.server.webserver()
 
@@ -47,7 +48,9 @@ async def move(req, resp, st):
         msg = "{success: %s, value: %d}" % ("True", step.Stepper.get_instance().steps )
     except ValueError:
         msg = "{success: %s, value: %d}" % ("False", None)
+
     resp.add_header("Content-Type", "application/json")
+    # resp.add_header("Access-Control-Allow-Origin", "null")
     gc.collect()
     await resp._send_headers()
     await resp.send(msg)
@@ -56,9 +59,11 @@ async def move(req, resp, st):
 @app.route('/api/get_status')
 async def status(req: tinyweb.server.request, resp: tinyweb.server.response):
     resp.add_header("Content-Type", "application/json")
+    resp.add_header("Access-Control-Allow-Origin", "null")
     await resp._send_headers()
+    res = json.dumps({"status": str(step.Stepper.get_instance().allowed), "steps":step.Stepper.get_instance().steps})
+    await resp.send(res)
     gc.collect()
-    await resp.send("{" + 'status: {}, steps: {}'.format(step.Stepper.get_instance().allowed, step.Stepper.get_instance().steps) + "}")
 
 
 @app.route('/api/set_status/<val>')
@@ -73,6 +78,7 @@ async def move(req: tinyweb.server.request, resp: tinyweb.server.response, val):
         pass
 
     resp.add_header("Content-Type", "application/json")
+    resp.add_header("Access-Control-Allow-Origin", "null")
     await resp._send_headers()
     await resp.send("{" + 'status: {}'.format( step.Stepper.get_instance().allowed) + "}")
     gc.collect()
@@ -96,18 +102,8 @@ class Status():
 
 
 def run():
-    # ap = network.WLAN(network.AP_IF)
-    # ap.active(True)
-    # ap.config(essid="Siec", password="123123123")
-    # print(ap.ifconfig()[0])
-    # Set all pins to OUT mode
-    # for p, d in pins.items():
-    #     machine.Pin(p, machine.Pin.OUT)
 
     app.add_resource(Status, '/api/status')
-    # app.add_resource(GPIOList, '/api/gpio')
-    # app.add_resource(GPIO, '/api/gpio/<pin>')
-    # app.add_resource(StepperController, '/api/stepper')
     s = step.Stepper.get_instance()
     app.run(host='0.0.0.0', port=8081)
 

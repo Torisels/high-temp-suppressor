@@ -37,8 +37,8 @@ class Stepper:
     PIN2 = 13
     PIN3 = 14
     PIN4 = 2
-    DELAY = 3
     PIN_EMERGENCY_STOP = 12
+    DELAY = 4
 
     @classmethod
     def get_instance(cls):  # singleton, use this to create stepper motor instance for whole project
@@ -136,7 +136,7 @@ class Stepper:
                             steps += 1
                         for bit, pin in zip(bits, self.pins):
                             pin.value(bit)
-                        await asyncio.sleep_ms(self.delay + 1)
+                        await asyncio.sleep_ms(self.delay)
                     else:
                         self.reset()
                         return False
@@ -159,14 +159,6 @@ class Stepper:
                 self.reset()
         self.reset()
 
-    # async def mv_four_steps_async(self, times, direction=1):
-    #     bits_list = self.mode[::direction]
-    #     for _ in range(abs(times)):
-    #         for bits in bits_list:
-    #             for bit, pin in zip(bits, self.pins):
-    #                 pin.value(bit)
-    #             await asyncio.sleep_ms(self.delay)
-    #     self.reset()
 
     def reset(self):
         for pin in self.pins:
