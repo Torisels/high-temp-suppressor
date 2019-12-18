@@ -1,10 +1,9 @@
 import uasyncio as asyncio
-
+import utime
 class LightSensor:
-    """Micropython BH1750 ambient light sensor driver.
+    """
+    Micropython BH1750 ambient light sensor driver.
     Adapted from https://github.com/PinkInk/upylib/tree/master/bh1750 by Gustaw Daczkowski
-
-
     """
 
     PWR_OFF = 0x00
@@ -21,7 +20,8 @@ class LightSensor:
 
     # default addr=0x23 if addr pin floating or pulled to ground
     # addr=0x5c if addr pin pulled high
-    def __init__(self, bus, mode = CONT_HIRES_2,  addr=0x23):
+    def __init__(self, bus, mode = CONT_HIRES_1,  addr=0x23):
+        self.mode = mode
         self.bus = bus
         self.addr = addr
         self.off()
@@ -31,9 +31,9 @@ class LightSensor:
         loop = asyncio.get_event_loop()
         loop.create_task(self.measure_luminance())
 
-    def measure_luminance(self):
+    async def measure_luminance(self):
         while True:
-            self._luminance = self.get_luminance(self.mode)
+            await self.get_luminance(self.mode)
 
     @property
     def luminance(self):
@@ -55,7 +55,6 @@ class LightSensor:
 
     def set_mode(self, mode):
         """Set sensor mode."""
-        self.mode = mode
         self.bus.writeto(self.addr, bytes([self.mode]))
 
     async def get_luminance(self, mode):
@@ -67,4 +66,4 @@ class LightSensor:
         await asyncio.sleep_ms(24 if mode in (0x13, 0x23) else 180)
         data = self.bus.readfrom(self.addr, 2)
         factor = 2.0 if mode in (0x11, 0x21) else 1.0
-        return (data[0]<<8 | data[1]) / (1.2 * factor)
+        self._luminance = (data[0]<<8 | data[1]) / (1.2 * factor)

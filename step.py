@@ -1,10 +1,5 @@
 from machine import Pin
-import time
 import uasyncio as asyncio
-import utime
-
-
-steps = 0
 
 
 class Stepper:
@@ -74,20 +69,8 @@ class Stepper:
     def handle_emergency_stop(self, i):
         if self.allowed is True:
             self.allowed = False
-            print("Emergency_stop_occured")
             self.reset()
 
-    # async def loop(self):
-    #     while True:
-    #         global steps
-    #         if steps == 0 or self.allowed is False:
-    #             await asyncio.sleep_ms(500)
-    #             self.reset()
-    #         elif self.allowed:
-    #             if steps > 0:
-    #                 await self.step(steps, 1)
-    #             else:
-    #                 await self.step(steps, -1)
     async def loop(self):
         while True:
             if self._scheduled_steps == 0 or self.allowed is False:
@@ -95,52 +78,6 @@ class Stepper:
                 self.reset()
             elif self.allowed:
                 await self.mv_four_steps()
-
-    def move_one_step(self, direction):
-        if self.allowed:
-            # print(self.step_pointer)
-            bits = self.mode[self.step_pointer]
-            for bit, pin in zip(bits, self.pins):
-                pin.value(bit)
-        else:
-            print("moving not allowed!")
-            self.reset()
-        if direction == 1:
-            if self.step_pointer == 3:
-                self.step_pointer = 0
-            else:
-                self.step_pointer += 1
-        elif direction == -1:
-            if self.step_pointer == 0:
-                self.step_pointer = 3
-            else:
-                self.step_pointer -= 1
-        # await asyncio.sleep_ms(self.delay)
-
-    async def step(self, count, direction=1):
-        """Rotate count steps. direction = -1 means backwards"""
-        divisor = 4 if self.mode == self.FULL_STEP else 8
-        count, remainder = divmod(count, divisor)
-
-        iterations = [(count, len(self.mode) + 1), (1, remainder)]
-        bits_list = self.mode[::direction]
-
-        for count, remainder in iterations:
-            for _ in range(count):
-                for bits in bits_list[:remainder]:
-                    if self.allowed:
-                        global steps
-                        if steps > 0:
-                            steps -= 1
-                        elif steps < 0:
-                            steps += 1
-                        for bit, pin in zip(bits, self.pins):
-                            pin.value(bit)
-                        await asyncio.sleep_ms(self.delay)
-                    else:
-                        self.reset()
-                        return False
-        self.reset()
 
     async def mv_four_steps(self):
         direction = 1 if self._scheduled_steps > 0 else -1
@@ -151,7 +88,7 @@ class Stepper:
                     for bit, pin in zip(bits, self.pins):
                         pin.value(bit)
                     await asyncio.sleep_ms(self.delay)
-                if direction==1:
+                if direction == 1:
                     self._scheduled_steps -= 1
                 else:
                     self._scheduled_steps += 1
@@ -159,15 +96,13 @@ class Stepper:
                 self.reset()
         self.reset()
 
-
     def reset(self):
         for pin in self.pins:
             pin.off()
 
-
-def rn(times=Stepper.FULL_ROTATION_FULL_STEP, delay=2, dir=1):
-    s1 = Stepper(Stepper.FULL_STEP, 15, 13, 14, 2, None, delay)
-    start = time.time()
-    s1.mv_four_steps(times, dir)
-    end = time.time()
-    print(end - start)
+# def rn(times=Stepper.FULL_ROTATION_FULL_STEP, delay=2, dir=1):
+#     s1 = Stepper(Stepper.FULL_STEP, 15, 13, 14, 2, None, delay)
+#     start = time.time()
+#     s1.mv_four_steps(times, dir)
+#     end = time.time()
+#     print(end - start)

@@ -1,4 +1,3 @@
-import network
 import tinyweb
 import gc
 import step
@@ -6,7 +5,30 @@ import json
 from machine import Pin
 from machine import I2C
 from light_sensor import LightSensor
-app = tinyweb.server.webserver()
+import uasyncio as asyncio
+import dht
+
+
+class DHSensor:
+    def __init__(self, data_pin):
+        self.d = dht.DHT11(Pin(data_pin))
+        self.temp = 0
+        self.humid = 0
+        loop = asyncio.get_event_loop()
+        loop.create_task(self.loop())
+
+    async def loop(self):
+        while True:
+            await asyncio.sleep_ms(1000)
+            self.d.measure()
+            self.temp = self.d.temperature()
+            self.humid = self.d.humidity()
+
+
+app = tinyweb.server.webserver(request_timeout=2, max_concurrency=2)
+i2c = I2C(-1, scl=Pin(5), sda=Pin(4))
+lux_1 = LightSensor(i2c)
+dht11_1 = DHSensor(16)
 
 
 # Index page
@@ -47,23 +69,34 @@ async def move(req, resp, st):
     try:
         st = int(st)
         step.Stepper.get_instance().steps = st
-        msg = "{success: %s, value: %d}" % ("True", step.Stepper.get_instance().steps )
+        msg = "{success: %s, value: %d}" % ("True", step.Stepper.get_instance().steps)
     except ValueError:
         msg = "{success: %s, value: %d}" % ("False", None)
 
     resp.add_header("Content-Type", "application/json")
     # resp.add_header("Access-Control-Allow-Origin", "null")
-    gc.collect()
+
     await resp._send_headers()
     await resp.send(msg)
+    gc.collect()
 
 
 @app.route('/api/get_status')
 async def status(req: tinyweb.server.request, resp: tinyweb.server.response):
     resp.add_header("Content-Type", "application/json")
-    resp.add_header("Access-Control-Allow-Origin", "null")
+    # resp.add_header("Access-Control-Allow-Origin", "null")
     await resp._send_headers()
-    res = json.dumps({"status": str(step.Stepper.get_instance().allowed), "steps":step.Stepper.get_instance().steps})
+    res = json.dumps({"status": str(step.Stepper.get_instance().allowed), "steps": step.Stepper.get_instance().steps})
+    await resp.send(res)
+    gc.collect()
+
+
+@app.route('/api/sensors')
+async def sensors(req: tinyweb.server.request, resp: tinyweb.server.response):
+    resp.add_header("Content-Type", "application/json")
+    # resp.add_header("Access-Control-Allow-Origin", "null")
+    await resp._send_headers()
+    res = json.dumps({"lux1": lux_1.luminance, "temp1": dht11_1.temp, "hum1": dht11_1.humid})
     await resp.send(res)
     gc.collect()
 
@@ -82,35 +115,12 @@ async def move(req: tinyweb.server.request, resp: tinyweb.server.response, val):
     resp.add_header("Content-Type", "application/json")
     resp.add_header("Access-Control-Allow-Origin", "null")
     await resp._send_headers()
-    await resp.send("{" + 'status: {}'.format( step.Stepper.get_instance().allowed) + "}")
+    await resp.send("{" + 'status: {}'.format(step.Stepper.get_instance().allowed) + "}")
     gc.collect()
 
 
-# RESTAPI: System status
-class Status():
-
-    def get(self, data):
-        mem = {'mem_alloc': gc.mem_alloc(),
-               'mem_free': gc.mem_free(),
-               'mem_total': gc.mem_alloc() + gc.mem_free()}
-        sta_if = network.WLAN(network.STA_IF)
-        ifconfig = sta_if.ifconfig()
-        net = {'ip': ifconfig[0],
-               'netmask': ifconfig[1],
-               'gateway': ifconfig[2],
-               'dns': ifconfig[3]
-               }
-        return {'memory': mem, 'network': net}
-
-
 def run():
-
-    app.add_resource(Status, '/api/status')
-    s = step.Stepper.get_instance()
-    scl = Pin(5)
-    sda = Pin(4)
-    i2c = I2C(scl, sda)
-    l_s = LightSensor(i2c)
+    step.Stepper.get_instance()
     app.run(host='0.0.0.0', port=8081)
 
 
