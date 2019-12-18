@@ -3,7 +3,9 @@ import tinyweb
 import gc
 import step
 import json
-
+from machine import Pin
+from machine import I2C
+from light_sensor import LightSensor
 app = tinyweb.server.webserver()
 
 
@@ -105,6 +107,10 @@ def run():
 
     app.add_resource(Status, '/api/status')
     s = step.Stepper.get_instance()
+    scl = Pin(5)
+    sda = Pin(4)
+    i2c = I2C(scl, sda)
+    l_s = LightSensor(i2c)
     app.run(host='0.0.0.0', port=8081)
 
 
