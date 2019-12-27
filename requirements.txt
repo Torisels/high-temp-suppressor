@@ -1,0 +1,4 @@
+# python version = 3.5.3
+asyncio
+adafruit-dht
+flask
