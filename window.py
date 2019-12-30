@@ -3,8 +3,8 @@ class window():
 
     def decision(self, tin, tout, humin, humout, lightin, lightout, optimal1=21, optimal2=28):
         # optymalna temperatura 21C - 28C
-        # optymalna wilgotnoÅÄ od 40% do 70%
-        # Å¹rÃ³dÅo: https://www.weather.gov/media/epz/wxcalc/heatIndex.pdf
+        # optymalna wilgotnosc od 40% do 70%
+        # Zrodlo: https://www.weather.gov/media/epz/wxcalc/heatIndex.pdf
         tin = 9 / 5 * tin + 32  # konwersja na Fahrenheita
         tout = 9 / 5 * tout + 32
         heatin = -42.379 + 2.04901523 * tin + 10.14333127 * humin - .122475541 * tin * humin - .00683783 * tin * tin\
@@ -17,26 +17,26 @@ class window():
 
         heatin = (heatin-32)*5/9    # konwersja na Celsjusza
         heatout = (heatout-32)*5/9
-        s = 'Odczuwalna temperatura w pomieszczeniu wynosi: ' + str(round(heatin, 2)) + "Â°C" + '\n'
+        s = 'Odczuwalna temperatura w pomieszczeniu wynosi: ' + str(round(heatin, 2)) + "°C" + '\n'
         if optimal2 > heatin > optimal1:
             if heatin > heatout and lightout > 35000:
-                s += 'Odczuwalna temperatura znajduje siÄ w podanym optymalnym przedziale. JeÅli chcesz, aby byÅo chÅodniej uchyl okno.'
+                s += 'Odczuwalna temperatura znajduje sie w podanym optymalnym przedziale. Jesli chcesz, aby było chlodniej uchyl okno.'
             elif heatin > heatout:
-                s += 'Odczuwalna temperatura znajduje siÄ w podanym optymalnym przedziale. JeÅli chcesz, aby byÅo chÅodniej otwÃ³rz okno.'
+                s += 'Odczuwalna temperatura znajduje sie w podanym optymalnym przedziale. Jesli chcesz, aby bylo chłodniej otworz okno.'
             else:
-                s += 'Odczuwalna temperatura znajduje siÄ w podanym optymalnym przedziale. JeÅli chcesz, aby byÅo cieplej owÃ³rz okno.'
+                s += 'Odczuwalna temperatura znajduje sie w podanym optymalnym przedziale. Jesli chcesz, aby bylo cieplej otworz okno.'
         else:
             if heatin > optimal2:
                 if heatin > heatout and lightout > 35000:
-                    s += 'Zalecamy uchylic okno w celu osiÄgniÄcia temperatury bliÅ¼szej optymalnej.'
+                    s += 'Zalecamy uchylic okno w celu osiagniecia temperatury blizszej optymalnej.'
                 elif heatin > heatout:
-                    s += 'Zalecamy otworzyÄ okno w celu osiÄgniÄcia temperatury bliÅ¼szej optymalnej.'
+                    s += 'Zalecamy otworzyc okno w celu osiagniecia temperatury blizszej optymalnej.'
                 else:
-                    s += 'Nie zalecamy otwieraÄ okien. BÄdzie jeszcze cieplej.'
+                    s += 'Nie zalecamy otwierac okien. Będzie jeszcze cieplej.'
             else:
                 if heatin < heatout:
-                    s += 'Zalecamy otworzyÄ okno w celu osiÄgniÄcia temperatury bliÅ¼szej optymalnej.'
+                    s += 'Zalecamy otworzyc okno w celu osiągniecia temperatury blizszej optymalnej.'
                 else:
-                    s += 'Nie zalecamy otwieraÄ okien. BÄdzie jeszcze zimniej.'
+                    s += 'Nie zalecamy otwierac okien. Bedzie jeszcze zimniej.'
         return s
 
