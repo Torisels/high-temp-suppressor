@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Untitled</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap.min.css') }}">
+</head>
+
+<body class="text-center flex-shrink-1">
+    <h1 class="text-center text-white bg-info shadow-sm" style="background: black;opacity: 1;">Smart Window</h1>
+    <div class="card-group">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">Memory</h6>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="font-size: 15px;">Free</td>
+                                <td style="font-size: 15px;">...</td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 15px;">Allocated</td>
+                                <td style="font-size: 15px;">...</td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 15px;">Total</td>
+                                <td style="font-size: 15px;">...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">Network</h6>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="font-size: 15px;">IP</td>
+                                <td style="font-size: 15px;">...</td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 15px;">NetMask</td>
+                                <td style="font-size: 15px;">...</td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 15px;">Gateway</td>
+                                <td style="font-size: 15px;">...</td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 15px;">DNS</td>
+                                <td style="font-size: 15px;">...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <h3>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Smart Window control</h3>
+    <div class="card-group">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>STATUS</strong></td>
+                                <td>...</td>
+                            </tr>
+                            <tr></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="btn-group" role="group"><button class="btn btn-primary" type="button" style="width: 76px;margin: 5px;background-color: rgb(23,162,184);">UP</button><button class="btn btn-primary" type="button" style="width: 76px;margin: 5px;background-color: rgb(23,162,184);">RESET</button>
+                    <button
+                        class="btn btn-primary" type="button" style="width: 76px;margin: 5px;background-color: rgb(23,162,184);opacity: 1;filter: blur(0px);">DOWN</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card"></div>
+    <div></div>
+    <div class="card-group">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Sensor 1</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>Sensor 2<br></td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>Sensor 3&nbsp;<br></td>
+                                <td>...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Sensor 4</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>Sensor 5</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>Sensor 6</td>
+                                <td>...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+</body>
+
+</html>
