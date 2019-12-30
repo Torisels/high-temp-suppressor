@@ -1,34 +1,36 @@
-from flask import render_template, url_for, flash, redirect, request, abort, send_from_directory
+from flask import render_template, send_from_directory
 from web_app import app
-import hardware_manager.step as step
-import hardware_manager.dht as dht
-
+from hardware_manager import step
+from hardware_manager import dht
+from hardware_manager import bh1750
 import json
+
 
 @app.route("/")
 @app.route("/home")
 def home():
-    return render_template('index.html')
+    return render_template('index.xhtml', temp_1=dht.DHTSensor.get_instance("indoor").temp,
+                           hum_1=dht.DHTSensor.get_instance("indoor").humid)
 
-@app.route('/js/<path:path>')
-def send_js(path):
-    return send_from_directory('static/js', path)
 
-@app.route('/css/<path:path>')
-def send_css(path):
-    return send_from_directory('static/css', path)
+@app.route('/api/sensors')
+def sensors():  # lux.luminance
+    dht_1 = dht.DHTSensor.get_instance("indoor")
+    lux_1 = bh1750.BH1750.get_instance("indoor")
+    lux_2 = bh1750.BH1750.get_instance("outdoor")
+    data = {"indoor": {"luminance": lux_1.luminance, "temperature": dht_1.temp, "humidity": dht_1.humid},
+            "outdoor": {"luminance": lux_2.luminance, "temperature": 10, "humidity": 44}} # TODO: add real sensor
+    return json.dumps(data)
 
-@app.route('/images/<path:path>')
-def send_images(path):
-    return send_from_directory('static/images', path)
 
-@app.route('/api/get_status')
+@app.route('/api/stepper/get_status')
 def status():
-    msg = json.dumps({"status": step.Stepper.get_instance().allowed, 
-    "steps": step.Stepper.get_instance().steps})
+    msg = json.dumps({"status": step.Stepper.get_instance().allowed,
+                      "steps": step.Stepper.get_instance().steps})
     return msg
 
-@app.route('/api/set_steps/<int:st>')
+
+@app.route('/api/stepper/set_steps/<int:st>')
 def move(st):
     try:
         st = int(st)
@@ -38,15 +40,10 @@ def move(st):
         msg = json.dumps({"success": False, "value": None})
     return msg
 
-@app.route('/api/sensors')
-def sensors():#lux.luminance
-    dht_instance = dht.DHSensor.get_instance()
-    msg = json.dumps({"lux1": 123, "temp1": dht_instance.temp, "hum1": dht_instance.humid})
-    return msg
 
-@app.route('/api/set_status/<int:val>')
+@app.route('/api/stepper/set_status/<int:val>')
 def set_status(val):
-    try:        
+    try:
         step.Stepper.get_instance().allowed = bool(int(val))
     except ValueError:
         pass
@@ -54,4 +51,3 @@ def set_status(val):
         pass
     msg = json.dumps({"status": step.Stepper.get_instance().allowed})
     return msg
-

@@ -1,14 +1,18 @@
 from web_app import app
-import hardware_manager.step as step
-import hardware_manager.dht as dht
-import RPi.GPIO as GPIO
+from hardware_manager.step import Stepper
+from hardware_manager.dht import DHTSensor
+from hardware_manager.bh1750 import BH1750
 import threading
 
+
 def run():
-	step.Stepper.get_instance()
-	dht.DHSensor.get_instance()
-	t2 = threading.Thread(target=app.run, args=('0.0.0.0', 8081,))
-	t2.start()
+    Stepper.get_instance()
+    DHTSensor.get_instance("indoor")
+    BH1750.get_instance("indoor")
+    BH1750.get_instance("outdoor")
+    # dht.DHSensor.get_instance_2()
+    app.run("0.0.0.0", port=8081, threaded=True)
+
 
 if __name__ == '__main__':
-	run()
+    run()
