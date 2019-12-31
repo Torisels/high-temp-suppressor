@@ -1,6 +1,3 @@
-### PyCharm
-[Korzystanie z pycharm wraz z micropythonem](https://blog.jetbrains.com/pycharm/2018/01/micropython-plugin-for-pycharm/)
-
 
 #### Obserwacje wynikające z pracy silnika krokowego:
 [Źródło mówiące o ilości kroków w silniku](http://www.jangeox.be/2013/10/stepper-motor-28byj-48_25.html)
