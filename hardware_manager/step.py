@@ -51,26 +51,74 @@ class Stepper:
         for pin in self.pins:
             GPIO.setup(pin, GPIO.OUT)
             GPIO.output(pin, 0)
-        self._scheduled_steps = 0
         if pin_emergency_stop is not None:
             self.pin_e_stop = pin_emergency_stop
             # self.pin_e_stop.irq(trigger=Pin.IRQ_FALLING, handler=self.handle_emergency_stop)
-
         self.allowed = True
-        self.reset()
+        self._scheduled_steps = 0
+        self._current_position = 0
+        self._step_mode = False         # True - scheduled steps does not affect current position
+        self._max_position = 1000
+        self._min_position = 0
+        self._scheduled_position = self._current_position
 
+        self.reset()
         t1 = threading.Thread(target=self.loop)
         t1.start()
         t2 = threading.Thread(target=self.emergency_stop_handler)
         t2.start()
 
     @property
-    def steps(self):
-        return self._scheduled_steps
+    def max_position(self):
+        return self._max_position
 
-    @steps.setter
-    def steps(self, steps):
-        self._scheduled_steps += steps
+    @property
+    def min_position(self):
+        return self._min_position
+    
+    @property
+    def current_position(self):
+        return self._current_position
+
+    @current_position.setter
+    def current_position(self, new_position):
+        if new_position < self.min_position or new_position > self.max_position:
+            raise ValueError("new position is out of range")
+        self.reset()
+        self._reset_step_mode()
+        self._current_position = new_position
+        self._scheduled_position = new_position
+   
+    @property
+    def scheduled_position(self):
+        return self._scheduled_position
+
+    @scheduled_position.setter
+    def scheduled_position(self, new_position):
+        if new_position < self.min_position or new_position > self.max_position:
+            raise ValueError("new position is out of range")
+        self.reset()
+        self._reset_step_mode()
+        self._scheduled_position = new_position
+        
+    def _reset_step_mode(self):
+        self._step_mode = False
+        self._scheduled_steps = 0
+        time.sleep(self.delay*5 / 1000)
+
+    
+    @property
+    def scheduled_steps(self):
+        if self._scheduled_steps != 0:
+            self._step_mode = True
+            self._scheduled_position = self._current_position
+            return self._scheduled_steps
+        return self._scheduled_position - self._current_position
+    
+    @scheduled_steps.setter
+    def scheduled_steps(self, new_value):
+        self._step_mode = True
+        self._scheduled_steps = new_value
 
     def emergency_stop_handler(self):  # TODO
         emergency_stop_button_down = False
@@ -81,30 +129,28 @@ class Stepper:
 
     def loop(self):
         while True:
-            if self._scheduled_steps == 0 or self.allowed is False:
-                # await asyncio.sleep(0.5)
+            if self.scheduled_steps == 0 or self.allowed is False:
                 time.sleep(0.5)
                 self.reset()
             elif self.allowed:
-                # await self.mv_four_steps()
                 self.mv_four_steps()
 
     def mv_four_steps(self):
-        direction = 1 if self._scheduled_steps > 0 else -1
+        direction = 1 if self.scheduled_steps > 0 else -1
         bits_list = self.mode[::direction]
-        for _ in range(abs(self._scheduled_steps)):
-            if self.allowed:
-                for bits in bits_list:
-                    for bit, pin in zip(bits, self.pins):
-                        GPIO.output(pin, bit)
-                    # await asyncio.sleep(self.delay/1000)
-                    time.sleep(self.delay / 1000)
-                if direction == 1:
-                    self._scheduled_steps -= 1
-                else:
-                    self._scheduled_steps += 1
+        #while self.scheduled_steps != 0:
+        if self.allowed:
+            for bits in bits_list:
+                for bit, pin in zip(bits, self.pins):
+                    GPIO.output(pin, bit)
+                # await asyncio.sleep(self.delay/1000)
+                time.sleep(self.delay / 1000)
+            if self._step_mode:
+                self._scheduled_steps -= direction
             else:
-                self.reset()
+                self._current_position += direction
+        #else:
+        #    self.reset()
         self.reset()
 
     def reset(self):

@@ -8,8 +8,8 @@ import threading
 def run():
     Stepper.get_instance()
     DHTSensor.get_instance("indoor")
-    BH1750.get_instance("indoor")
-    BH1750.get_instance("outdoor")
+#    BH1750.get_instance("indoor")
+#    BH1750.get_instance("outdoor")
     # dht.DHSensor.get_instance_2()
     app.run("0.0.0.0", port=8081, threaded=True)
 
