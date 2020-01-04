@@ -28,7 +28,9 @@ def status():
     msg = json.dumps({"status": step.Stepper.get_instance().allowed,
                       "steps": step.Stepper.get_instance().scheduled_steps,
                       "current_position": step.Stepper.get_instance().current_position,
-                      "scheduled_position": step.Stepper.get_instance().scheduled_position})
+                      "scheduled_position": step.Stepper.get_instance().scheduled_position,
+                      "min_position": step.Stepper.get_instance().min_position,
+                      "max_position": step.Stepper.get_instance().max_position})
     return msg
 
 
@@ -38,6 +40,18 @@ def new_position(pos):
         pos = int(pos)
         step.Stepper.get_instance().scheduled_position = pos
         msg = json.dumps({"success": True, "value": step.Stepper.get_instance().scheduled_position})
+    except ValueError:
+        msg = json.dumps({"success": False, "value": None})
+    return msg
+
+
+
+@app.route('/api/stepper/set_max_position/<pos>')
+def set_max_position(pos):
+    try:
+        pos = int(pos)
+        step.Stepper.get_instance().max_position = pos
+        msg = json.dumps({"success": True, "value": step.Stepper.get_instance().max_position})
     except ValueError:
         msg = json.dumps({"success": False, "value": None})
     return msg

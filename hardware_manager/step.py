@@ -1,6 +1,7 @@
 import RPi.GPIO as GPIO
 import time
 import threading
+import json
 
 
 class Stepper:
@@ -35,6 +36,7 @@ class Stepper:
     PIN4 = 15
     PIN_EMERGENCY_STOP = 21
     DELAY = 4
+	CONFIG_PATH = 'config.json'
 
     @classmethod
     def get_instance(cls):  # singleton, use this to create stepper motor instance for whole project
@@ -67,10 +69,19 @@ class Stepper:
         t1.start()
         t2 = threading.Thread(target=self.emergency_stop_handler)
         t2.start()
-
+        
+    
     @property
     def max_position(self):
         return self._max_position
+
+    @max_position.setter
+    def max_position(self, pos):
+        if pos < self._min_position:
+            raise ValueError("max position must be bigger than min position")
+        if self._current_position > pos:
+            self.current_position = pos
+        self._max_position = pos
 
     @property
     def min_position(self):
