@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no"/>
+    <title>Untitled</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap.min.css') }}"/>
+</head>
+
+<body class="text-center flex-shrink-1">
+    <h1 class="text-center text-white bg-info shadow-sm" style="background: black;opacity: 1;">Smart Window Blind</h1>
+    <div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1 style="height: 100px;">Control</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6"></div>
+                <div class="col-md-6"><button class="btn btn-primary" type="button" style="width: 100px;margin: 5px;background-color: rgb((0,148,255);border-color: rgb(0,209,255);/*color: white;*/">Up</button><button class="btn btn-primary" type="button" style="width: 100px;margin: 5px;background-color: rgb((0,148,255);border-color: rgb(0,209,255);">Reset</button>
+                    <button
+                        class="btn btn-primary" type="button" style="width: 100px;margin: 5px;background-color: rgb((0,148,255);border-color: rgb(0,209,255);">Down</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="table-responsive" style="padding: 75px;">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Temperature: {{temp_1}}&#x2103;</th>
+                    <th>Humidity: {{hum_1}}%</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Detector 3</td>
+                    <td>Detector 4</td>
+                </tr>
+                <tr>
+                    <td>Detector 5</td>
+                    <td>Detector&nbsp;6</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <script type="text/javascript" src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='main.js') }}"></script>
+</body>
+
+</html>
