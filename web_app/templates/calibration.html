@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap.min.css') }}">
+  <script src="calibration.js"></script>
+</head>
+<body>
+  <div class="card bg-secondary text-white"  style="width: 25rem;">
+    <div class="container">
+      <h1> Calibration window</h1>      
+      <p>Use buttons below to calibrate the engine </p>
+      <div class="alert alert-info">
+        <strong>Information:</strong> Please move window blinds to horizontal position
+      </div>
+      <div class="btn-group">
+        <button type="button" class="btn btn-success" onclick="plus_button()">+</button>
+        <button type="button" class="btn btn-success" onclick="minus_button()">-</button>
+      </div>
+      <p class="font-weight-bolder">Choose scale:</p>
+      <div class="btn-group">
+        <button type="button" class="btn btn-primary" onclick="scale1()">Scale 1</button>
+        <button type="button" class="btn btn-primary" onclick="scale2()">Scale 2</button>
+        <button type="button" class="btn btn-primary" onclick="scale3()">Scale 3</button>
+      </div>
+      <ul class="pagination justify-content-end" style="margin:20px 0">
+        <li class="page-item"><a class="page-link" href="#">Previous step</a></li>
+        <li class="page-item"><a class="page-link" href="#">Next step</a></li>
+      </ul>
+    </div>
+  </div>
+  <script src="assets/js/jquery.min.js"></script>
+  <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>
