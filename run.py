@@ -7,7 +7,7 @@ import threading
 
 def run():
     Stepper.get_instance()
-    DHTSensor.get_instance("indoor")
+    #DHTSensor.get_instance("indoor")
 #    BH1750.get_instance("indoor")
 #    BH1750.get_instance("outdoor")
     # dht.DHSensor.get_instance_2()

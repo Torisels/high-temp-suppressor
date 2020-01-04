@@ -2,7 +2,7 @@ import RPi.GPIO as GPIO
 import time
 import threading
 import json
-
+import os
 
 class Stepper:
     LOW = 0
@@ -36,7 +36,13 @@ class Stepper:
     PIN4 = 15
     PIN_EMERGENCY_STOP = 21
     DELAY = 4
-	CONFIG_PATH = 'config.json'
+    CONFIG_PATH = 'stepper_config.json'
+    DEFAULT_CONFIG = {
+        'min_position': 0,
+        'max_position': 1000,
+        'current_position': 0
+    }
+    CONFIG_SAVE_DELAY = 1  # seconds
 
     @classmethod
     def get_instance(cls):  # singleton, use this to create stepper motor instance for whole project
@@ -58,10 +64,16 @@ class Stepper:
             # self.pin_e_stop.irq(trigger=Pin.IRQ_FALLING, handler=self.handle_emergency_stop)
         self.allowed = True
         self._scheduled_steps = 0
-        self._current_position = 0
         self._step_mode = False         # True - scheduled steps does not affect current position
-        self._max_position = 1000
+        self._max_position = 0
         self._min_position = 0
+        self._current_position = 0
+        try:
+            self._read_config()
+        except Exception as err:
+            print("error reading a stepper config, setting default values \n" + str(err))
+            self._update_config_from_dict(self.DEFAULT_CONFIG)
+
         self._scheduled_position = self._current_position
 
         self.reset()
@@ -69,7 +81,45 @@ class Stepper:
         t1.start()
         t2 = threading.Thread(target=self.emergency_stop_handler)
         t2.start()
+        t3 = threading.Thread(target=self.config_save_loop)
+        t3.start()
         
+    def config_save_loop(self):
+        while True:
+            time.sleep(self.CONFIG_SAVE_DELAY)
+            try:
+                self._save_config()
+            except ValueError as err:
+                print(err)
+    
+    def _get_config_dict(self):
+        return {
+            'max_position': self._max_position,
+            'min_position': self._min_position,
+            'current_position': self._current_position
+        }
+    
+    def _update_config_from_dict(self, conf):
+        tmp_max = conf['max_position']
+        tmp_min = conf['min_position']
+        tmp_cur = conf['current_position']
+        if tmp_min > tmp_max:
+            raise ValueError("max position cannot be smaller than min position")
+        self._max_position = tmp_max
+        self._min_position = tmp_min
+        self.current_position = tmp_cur
+
+    def _read_config(self, path = CONFIG_PATH):
+        with open(path) as json_file:
+            data = json.load(json_file)
+        self._update_config_from_dict(data)
+    
+    def _save_config(self, path = CONFIG_PATH):
+        if os.path.exists(path):
+            with open(path, 'w') as f:
+                json.dump(self._get_config_dict(), f)
+        else:
+            raise ValueError("such path does not exist")
     
     @property
     def max_position(self):
@@ -78,7 +128,7 @@ class Stepper:
     @max_position.setter
     def max_position(self, pos):
         if pos < self._min_position:
-            raise ValueError("max position must be bigger than min position")
+            raise ValueError("max position cannot be smaller than min position")
         if self._current_position > pos:
             self.current_position = pos
         self._max_position = pos
