@@ -35,6 +35,7 @@ class Stepper:
     PIN3 = 13
     PIN4 = 15
     PIN_EMERGENCY_STOP = 21
+    EMERGENCY_STOP_DELAY = 0.1  # seconds
     DELAY = 4
     CONFIG_PATH = 'stepper_config.json'
     DEFAULT_CONFIG = {
@@ -59,9 +60,8 @@ class Stepper:
         for pin in self.pins:
             GPIO.setup(pin, GPIO.OUT)
             GPIO.output(pin, 0)
-        if pin_emergency_stop is not None:
-            self.pin_e_stop = pin_emergency_stop
-            # self.pin_e_stop.irq(trigger=Pin.IRQ_FALLING, handler=self.handle_emergency_stop)
+        self.pin_emergency_stop = pin_emergency_stop
+        GPIO.setup(pin_emergency_stop, GPIO.IN)    
         self.allowed = True
         self._scheduled_steps = 0
         self._step_mode = False         # True - scheduled steps does not affect current position
@@ -132,7 +132,7 @@ class Stepper:
         if self._current_position > pos:
             self.current_position = pos
         self._max_position = pos
-
+    
     @property
     def min_position(self):
         return self._min_position
@@ -181,12 +181,14 @@ class Stepper:
         self._step_mode = True
         self._scheduled_steps = new_value
 
-    def emergency_stop_handler(self):  # TODO
-        emergency_stop_button_down = False
-        if emergency_stop_button_down:
-            if self.allowed is True:
-                self.allowed = False
-                self.reset()
+    def emergency_stop_handler(self):  # sprawdzic z guzikiem
+        while(True):
+            time.sleep(self.EMERGENCY_STOP_DELAY)
+            emergency_stop_button_down = bool(GPIO.input(self.pin_emergency_stop))
+            if emergency_stop_button_down:
+                if self.allowed is True:
+                    self.allowed = False
+                    self.reset()
 
     def loop(self):
         while True:
