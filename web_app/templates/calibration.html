@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='calibration_style.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap.min.css') }}">
+</head>
+<body>
+  <div class="card bg-secondary text-white"  style="width: 25rem;">
+    <div class="container">
+      <h1> Calibration window</h1>      
+      <p>Use buttons below to calibrate the engine </p>
+      <div class="alert alert-info">
+        <strong>Information:</strong> Please move window blinds to horizontal position
+      </div>
+      <div class="btn-group">
+        <button type="button" class="btn btn-success" id="plus" onclick="plus_button()">+</button>
+        <button type="button" class="btn btn-success" id="minus"onclick="minus_button()">-</button>
+      </div>
+      <p class="font-weight-bolder">Choose scale:</p>
+      <div class="btn-group">
+        <button type="button" class="btn btn-primary" id="1" onclick="scale1()">Scale 1</button>
+        <button type="button" class="btn btn-primary" id="2" onclick="scale2()">Scale 2</button>
+        <button type="button" class="btn btn-primary" id="3" onclick="scale3()">Scale 3</button>
+      </div>
+      <div class="btn-group" style="margin:20px 0">
+        <button type="button" class="btn btn-secondary" id="previous" onclick="previous_step()">previous step</button>
+        <button type="button" class="btn btn-secondary" id="next" onclick="next_step()">next step</button>
+      </div>
+    </div>
+  </div>
+  <script src="assets/js/jquery.min.js"></script>
+  <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+  <script src="{{ url_for('static', filename='calibration.js') }}"></script>
+</body>
+</html>
