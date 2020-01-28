@@ -9,7 +9,7 @@ def run():
     DHTSensor.get_instance("indoor")
     DHTSensor.get_instance("outdoor")
     BH1750.get_instance("indoor")
-    # BH1750.get_instance("outdoor")
+    BH1750.get_instance("outdoor")
     app.run("0.0.0.0", port=8081, threaded=True)
 
 
