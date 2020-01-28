@@ -5,10 +5,9 @@ import threading
 from .pin_config import config
 
 
-
 class DHTSensor:
     _INSTANCES = {"indoor": None, "outdoor": None}
-    POLL_TIME = 1
+    POLL_TIME = 1.5
 
     @classmethod
     def get_instance(cls, name):
@@ -23,7 +22,6 @@ class DHTSensor:
         self._temp = None
         self._humid = None
         t1 = threading.Thread(target=self.loop)
-        # t1.daemon = True
         t1.start()
 
     @property
