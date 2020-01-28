@@ -1,0 +1,15 @@
+/*[type=button]:not(:disabled), [type=reset]:not(:disabled), [type=submit]:not(:disabled), button:not(:disabled) {*/
+/*}*/
+
+button#btn_minus, button#btn_plus{
+    box-shadow: none;
+}
+
+
+
+df
+body {
+    background-color: #86e6b3;
+}
+
+
