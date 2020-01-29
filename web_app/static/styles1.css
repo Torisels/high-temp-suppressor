@@ -5,11 +5,18 @@ button#btn_minus, button#btn_plus{
     box-shadow: none;
 }
 
-
-
-df
-body {
-    background-color: #86e6b3;
+label.shadshad{
+    box-shadow: none;
 }
 
 
+
+
+body {
+    background-color: #6f16e6;
+}
+
+
+label.btn.btn-primary {
+    box-shadow: none;
+}

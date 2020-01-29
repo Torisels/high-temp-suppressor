@@ -13,6 +13,7 @@ def home():
                            hum_1=dht.DHTSensor.get_instance("indoor").humid)
 
 
+
 @app.route('/api/sensors')
 def sensors():  # lux.luminance
     dht_1 = dht.DHTSensor.get_instance("indoor")

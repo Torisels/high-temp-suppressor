@@ -3,8 +3,8 @@
 
 let current_step = 0;
 
-const information = ["Please move window blinds to horizontal position. (fully open)",
-"Please move window blinds to vertical position (fully closed)"
+const information = ["Please move window blinds to horizontal position. \n Then click `next step`.",
+"Please move window blinds to vertical position (fully closed). <br>Click `Complete!` to finish the process."
 ];
 
 
@@ -16,14 +16,13 @@ let current_scale = 100;
 
 (function() {
 
-    let buttons_listeners = [];
 
     for (const btn_name of buttons){
         console.log(btn_name);
         document.getElementById(btn_name).onclick = button_clicked;
     }
 
-    let scale_buttons = document.getElementsByClassName("scale");
+    let scale_buttons = document.getElementsByClassName("btn_scale");
     for (const scale_btn of scale_buttons)
     {
         scale_btn.onclick = scale_button_clicked;
@@ -49,7 +48,9 @@ function button_clicked() {
 
 function scale_button_clicked()
 {
+    console.log("here");
     let scale = +this.innerText;
+    console.log(this.innerText);
     current_scale = scale;
     document.getElementById("scale_value").innerText = `Current scale: ${current_scale}`;
 }
@@ -61,11 +62,10 @@ function calibration_step_button_clicked()
     {
         current_step ++;
     }
-    else
+    else if (this.id === "previous")
     {
-        if (current_step > 0){
+        if (current_step > 0)
             current_step --;
-        }
     }
 
     console.log(current_step);
@@ -78,15 +78,23 @@ function handle_step_state()
 {
     let previous = document.getElementById("previous");
     let next = document.getElementById("next");
+    let complete = document.getElementById("btn_complete");
+    let information_box = document.getElementById("information_box");
+    information_box.innerHTML = information[current_step];
     switch (current_step) {
 
         case 0:
         {
             previous.setAttribute("disabled", "disabled");
+            complete.setAttribute("disabled", "disabled");
+            next.removeAttribute("disabled");
+            information_box.innerText = information[current_step];
             break;
         }
         case 1:
             previous.removeAttribute("disabled");
+            complete.removeAttribute("disabled");
+            next.setAttribute("disabled", "disabled");
             break;
     }
 }

@@ -4,52 +4,166 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no"/>
-    <title>Untitled</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}"/>
+    <title>Smart window blind</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main_styles.css') }}"/>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap.min.css') }}"/>
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap-slider.css') }}"/>
+
+    <link rel="icon" type="image/ico" href="{{ url_for('static', filename='favicon.ico') }}"/>
 </head>
 
 <body class="text-center flex-shrink-1">
-    <h1 class="text-center text-white bg-info shadow-sm" style="background: black;opacity: 1;">Smart Window Blind</h1>
-    <div>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <h1 style="height: 100px;">Control</h1>
+<nav class="navbar navbar-dark bg-dark">
+    <span class="navbar-brand" >Smart Window Blind</span>
+    <!--    <p class="navbar-text">brand text here yadda yadda</p>-->
+</nav>
+<div class="container" style="padding-top: 40px;">
+    <!--        <div class="container">-->
+    <!--            <div class="row">-->
+    <!--                <div class="col-md-12">-->
+    <!--                </div>-->
+    <!--            </div>-->
+    <!--            <div class="row">-->
+    <!--                <div class="col-md-6"></div>-->
+    <!--                <div class="col-md-6"><button class="btn btn-primary" type="button" style="width: 100px;margin: 5px;background-color: rgb((0,148,255);border-color: rgb(0,209,255);/*color: white;*/">Up</button><button class="btn btn-primary" type="button" style="width: 100px;margin: 5px;background-color: rgb((0,148,255);border-color: rgb(0,209,255);">Reset</button>-->
+    <!--                    <button-->
+    <!--                        class="btn btn-primary" type="button" style="width: 100px;margin: 5px;background-color: rgb((0,148,255);border-color: rgb(0,209,255);">Down</button>-->
+    <!--                </div>-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <div class="row justify-content-around">
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-header bg-light text-dark">
+                    <strong> Indoor sensors:</strong>
                 </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item ">Temperature: 20&#176;C</li>
+                    <li class="list-group-item">Humidity: 55%</li>
+                    <li class="list-group-item">Luminance: 1234lx</li>
+                </ul>
             </div>
-            <div class="row">
-                <div class="col-md-6"></div>
-                <div class="col-md-6"><button class="btn btn-primary" type="button" style="width: 100px;margin: 5px;background-color: rgb((0,148,255);border-color: rgb(0,209,255);/*color: white;*/">Up</button><button class="btn btn-primary" type="button" style="width: 100px;margin: 5px;background-color: rgb((0,148,255);border-color: rgb(0,209,255);">Reset</button>
-                    <button
-                        class="btn btn-primary" type="button" style="width: 100px;margin: 5px;background-color: rgb((0,148,255);border-color: rgb(0,209,255);">Down</button>
+        </div>
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-header bg-light text-dark">
+                    <strong>Outdoor sensors:</strong>
                 </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item ">Temperature: 15&#176;C</li>
+                    <li class="list-group-item">Humidity: 65%</li>
+                    <li class="list-group-item">Luminance: 7777lx</li>
+                </ul>
             </div>
         </div>
     </div>
-    <div class="table-responsive" style="padding: 75px;">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Temperature: {{temp_1}}&#x2103;</th>
-                    <th>Humidity: {{hum_1}}%</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Detector 3</td>
-                    <td>Detector 4</td>
-                </tr>
-                <tr>
-                    <td>Detector 5</td>
-                    <td>Detector&nbsp;6</td>
-                </tr>
-            </tbody>
-        </table>
+    <div class="row justify-content-around" style="padding-top: 30px">
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-header bg-light text-dark">
+                    <strong> Stepper motor control:</strong>
+                </div>
+                <div class="card-body">
+                    <p class="card-text text-left">This is manual stepper control for window blind. Select `Open` or `Close` to fully open/close the blind. <br/><br/>
+                        Use calibration if needed:
+                    </p>
+                    <button type="button" class="btn btn-dark " id="btn_calibration" >Calibration</button>
+                </div>
+
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item bg-light">Status: <span class="text-success">Enabled</span></li>
+                    <li class="list-group-item bg-light">Current state: 55% closed</li>
+                    <li class="list-group-item ">
+
+                        <span id="ex6CurrentSliderValLabel">Move to: <span id="ex6SliderVal">3</span>%</span>
+                        <br/>
+                        <input id="ex6" type="text" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="3" />
+
+
+                    </li>
+
+                    <li class="list-group-item">
+                        <button type="button" class="btn btn-dark " id="previous" >Open</button>
+                        <button type="button" class="btn btn-dark " id="next" >Move</button>
+                        <button type="button" class="btn btn-dark " id="btn_close">Close</button>
+                        <button type="button" class="btn btn-danger " id="btn_enable">Disable</button>
+
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-header bg-light text-dark">
+                    <strong>Airing decision system:</strong>
+                </div>
+                <div class="card-body">
+                <p class="card-text text-left">Apparent temperature is located in given optimal temperature range. If you want to increase temperature in the room, open the window.</p>
+            </div>
+            </div>
+        </div>
     </div>
-<!--    <script type="text/javascript" src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>-->
-    <script type="text/javascript" src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='main.js') }}"></script>
+    <div class="row justify-content-start" id="div_calibration" style="padding-top: 30px; display: none;">
+        <div class="col col-sm-1"></div>
+        <div class="col-sm-6" >
+
+                <div class="card bg-light text-left" style="padding-top: 20px; margin-bottom: 30px" >
+                    <div class="container">
+                        <div class="card-header bg-light text-dark" style="margin-bottom: 15px">
+                            <strong>Calibration wizard:</strong>
+                        </div >
+                    <div class="alert alert-primary" style="margin-top: 5px; margin-bottom: 5px">
+                        <strong>Information:</strong> <span id="information_box">Please move window blinds to horizontal position.
+                      Then click `next step`.
+                      </span>
+                    </div>
+                    <div class="alert alert-primary" style="margin-top: 5px; margin-bottom: 5px">
+                        Use '+' to close and '-' to open:
+                    </div>
+
+                    <div class="btn-group" style="margin-bottom: 10px">
+                        <button type="button" class="btn btn-success bbb" id="btn_plus" >+</button>
+                        <button type="button" class="btn btn-success bbb" id="btn_minus" >-</button>
+                    </div>
+                        <div class="row" style="margin:10px 0px">
+                        <span class="font-weight-bolder" id="scale_value">Choose scale:</span>
+                        </div>
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="btn btn-primary  btn_scale">
+                            <input type="radio" name="options" id="btn_scale_1"  autocomplete="off" > 1
+                        </label>
+                        <label class="btn btn-primary btn_scale">
+                            <input type="radio" name="options" id="btn_scale_2" autocomplete="off"> 10
+                        </label>
+                        <label class="btn btn-primary btn_scale active">
+                            <input type="radio" name="options" id="btn_scale_3"  autocomplete="off"> 100
+                        </label>
+
+
+                    </div>
+
+
+                    <div class="row" style="margin:10px 0px">
+                    <div class="btn-group"  >
+                        <button type="button" class="btn btn-dark step" id="xx" >previous step</button>
+                        <button type="button" class="btn btn-dark step" id="ss" >next step</button>
+                        <button type="button" class="btn btn-success step" id="btn_complete" disabled="disabled">Complete!</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+</div>
+<script type="text/javascript" src="{{ url_for('static', filename='jquery-3.4.1.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='bootstrap-slider.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='calibration.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='main.js') }}"></script>
 </body>
 
 </html>

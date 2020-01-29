@@ -12,55 +12,47 @@
 <body>
   <div class="card bg-secondary text-white"  style="width: 25rem;">
     <div class="container">
-      <h1> Calibration window</h1>      
-      <p>Use buttons below to calibrate the stepper motor </p>
-      <div class="alert alert-info">
-        <strong>Information:</strong> <span id="info_message">Please move window blinds to horizontal position.</span>
-        <br>
+      <h1> Calibration wizard</h1>
+      <p >Use buttons below to calibrate the stepper motor </p>
+      <div class="alert alert-primary" style="margin-top: 5px; margin-bottom: 5px">
+        <strong>Information:</strong> <span id="information_box">Please move window blinds to horizontal position.
+      Then click `next step`.
+      </span>
+      </div>
+      <div class="alert alert-primary" style="margin-top: 5px; margin-bottom: 5px">
         Use '+' to close and '-' to open:
       </div>
 
-
-      <br>
       <div class="btn-group">
         <button type="button" class="btn btn-success bbb" id="btn_plus" >+</button>
         <button type="button" class="btn btn-success bbb" id="btn_minus" >-</button>
       </div> <br><br>
       <p class="font-weight-bolder" id="scale_value">Choose scale:</p>
       <div class="btn-group btn-group-toggle" data-toggle="buttons">
-        <label class="btn btn-primary active">
-          <input type="radio" name="options" id="btn_scale_1" autocomplete="off" > 1
+        <label class="btn btn-primary  btn_scale">
+          <input type="radio" name="options" id="btn_scale_1"  autocomplete="off" > 1
         </label>
-        <label class="btn btn-primary">
+        <label class="btn btn-primary btn_scale">
           <input type="radio" name="options" id="btn_scale_2" autocomplete="off"> 10
         </label>
-        <label class="btn btn-primary">
-          <input type="radio" name="options" id="btn_scale_3" autocomplete="off"> 100
+        <label class="btn btn-primary btn_scale active">
+          <input type="radio" name="options" id="btn_scale_3"  autocomplete="off"> 100
         </label>
 
 
       </div>  <br>
 
-      <div class="btn-group btn-group-toggle" data-toggle="buttons">
-        <label class="btn btn-secondary active">
-          <input type="radio" name="options" id="option1" autocomplete="off" checked> Active
-        </label>
-        <label class="btn btn-secondary">
-          <input type="radio" name="options" id="option2" autocomplete="off"> Radio
-        </label>
-        <label class="btn btn-secondary">
-          <input type="radio" name="options" id="option3" autocomplete="off"> Radio
-        </label>
-      </div>
+
       <div class="btn-group" style="margin:20px 0" >
         <button type="button" class="btn btn-dark step" id="previous" >previous step</button>
         <button type="button" class="btn btn-dark step" id="next" >next step</button>
+        <button type="button" class="btn btn-success step" id="btn_complete" disabled="disabled">Complete!</button>
       </div>
     </div>
   </div>
-<!--  <script src="assets/js/jquery.min.js"></script>-->
-<!--  <script src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>-->
-  <script src="../static/calibration.js"></script>
-<!--  <script src="{{ url_for('static', filename='calibration.js') }}"></script>-->
+  <script src="{{ url_for('static', filename='jquery-3.4.1.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
+<!--  <script src="../static/calibration.js"></script>-->
+  <script src="{{ url_for('static', filename='calibration.js') }}"></script>
 </body>
 </html>
