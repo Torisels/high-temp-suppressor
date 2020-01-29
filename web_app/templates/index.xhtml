@@ -16,22 +16,16 @@
 <body class="text-center flex-shrink-1">
 <nav class="navbar navbar-dark bg-dark">
     <span class="navbar-brand" >Smart Window Blind</span>
-    <!--    <p class="navbar-text">brand text here yadda yadda</p>-->
 </nav>
-<div class="container" style="padding-top: 40px;">
-    <!--        <div class="container">-->
-    <!--            <div class="row">-->
-    <!--                <div class="col-md-12">-->
-    <!--                </div>-->
-    <!--            </div>-->
-    <!--            <div class="row">-->
-    <!--                <div class="col-md-6"></div>-->
-    <!--                <div class="col-md-6"><button class="btn btn-primary" type="button" style="width: 100px;margin: 5px;background-color: rgb((0,148,255);border-color: rgb(0,209,255);/*color: white;*/">Up</button><button class="btn btn-primary" type="button" style="width: 100px;margin: 5px;background-color: rgb((0,148,255);border-color: rgb(0,209,255);">Reset</button>-->
-    <!--                    <button-->
-    <!--                        class="btn btn-primary" type="button" style="width: 100px;margin: 5px;background-color: rgb((0,148,255);border-color: rgb(0,209,255);">Down</button>-->
-    <!--                </div>-->
-    <!--            </div>-->
-    <!--        </div>-->
+<div class="alert alert-warning alert-dismissible fade " id="alert_calib_success" role="alert" style="margin: 0.3%; display: none">
+    <strong>Holy guacamole!</strong> You should check in on some of those fields below.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="container" style="padding-top: 1%">
+
+
     <div class="row justify-content-around">
         <div class="col-sm-4">
             <div class="card">
@@ -58,7 +52,7 @@
             </div>
         </div>
     </div>
-    <div class="row justify-content-around" style="padding-top: 30px">
+    <div class="row justify-content-around" style="padding-top: 1%">
         <div class="col-sm-4">
             <div class="card">
                 <div class="card-header bg-light text-dark">
@@ -76,18 +70,18 @@
                     <li class="list-group-item bg-light">Current state: 55% closed</li>
                     <li class="list-group-item ">
 
-                        <span id="ex6CurrentSliderValLabel">Move to: <span id="ex6SliderVal">3</span>%</span>
+                        <span id="ex6CurrentSliderValLabel">Move to: <span id="ex6SliderVal">50</span>%</span>
                         <br/>
-                        <input id="ex6" type="text" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="3" />
+                        <input id="ex6" type="text" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="50" />
 
 
                     </li>
 
                     <li class="list-group-item">
-                        <button type="button" class="btn btn-dark " id="previous" >Open</button>
-                        <button type="button" class="btn btn-dark " id="next" >Move</button>
+                        <button type="button" class="btn btn-dark " id="btn_open" >Open</button>
+                        <button type="button" class="btn btn-dark " id="btn_move" >Move</button>
                         <button type="button" class="btn btn-dark " id="btn_close">Close</button>
-                        <button type="button" class="btn btn-danger " id="btn_enable">Disable</button>
+                        <button type="button" class="btn btn-danger " id="btn_toggle">Disable</button>
 
                     </li>
                 </ul>
@@ -146,8 +140,8 @@
 
                     <div class="row" style="margin:10px 0px">
                     <div class="btn-group"  >
-                        <button type="button" class="btn btn-dark step" id="xx" >previous step</button>
-                        <button type="button" class="btn btn-dark step" id="ss" >next step</button>
+                        <button type="button" class="btn btn-dark step" id="previous" >previous step</button>
+                        <button type="button" class="btn btn-dark step" id="next" >next step</button>
                         <button type="button" class="btn btn-success step" id="btn_complete" disabled="disabled">Complete!</button>
                     </div>
                     </div>

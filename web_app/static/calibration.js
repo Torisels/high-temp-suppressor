@@ -67,6 +67,13 @@ function calibration_step_button_clicked()
         if (current_step > 0)
             current_step --;
     }
+    else{
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        $("#div_calibration").fadeOut(400);
+        current_step = 0;
+        document.getElementById("alert_calib_success").style.display = "";
+        document.getElementById("alert_calib_success").classList.add("show");
+    }
 
     console.log(current_step);
     handle_step_state();
