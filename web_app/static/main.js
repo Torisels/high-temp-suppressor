@@ -23,6 +23,8 @@ const API_BASE_URL = "http://192.168.1.20:8081/api";
     calib_buton.onclick = calibration_button_clicked;
 
     document.getElementById("btn_open").onclick = update_sensors;
+    update_sensors();
+    window.setInterval(update_sensors, 1000);
 
 })();
 
@@ -40,7 +42,19 @@ function calibration_button_clicked() {
 
 async function update_sensors() {
     let result = await makeRequest("GET", API_BASE_URL+"/sensors");
-    console.log(result);
+    let data = JSON.parse(result);
+
+    for (const [sensors_type, sensors_values] of Object.entries(data)) {
+        for (const [sensor_name, sensor_value] of Object.entries(sensors_values))
+        {
+            let el = document.querySelector(`span.${sensors_type}.${sensor_name}`);
+            if (sensor_value == null)
+                el.innerHTML = "N/A";
+            else
+                el.innerHTML = sensor_value
+        }
+    }
+
 }
 
 function makeRequest(method, url) {
