@@ -5,7 +5,7 @@ import json
 import os
 
 import pathlib
-
+from . import data_container
 
 class Stepper:
     LOW = 0
@@ -33,13 +33,13 @@ class Stepper:
     ]
 
     _INSTANCE = None
-    PIN1 = 7
-    PIN2 = 11
-    PIN3 = 13
-    PIN4 = 15
-    PIN_EMERGENCY_STOP = 21
+    PIN1 = 12
+    PIN2 = 16
+    PIN3 = 20
+    PIN4 = 21
+    PIN_EMERGENCY_STOP = 27
     EMERGENCY_STOP_DELAY = 0.1  # seconds
-    DELAY = 4
+    DELAY = 2.5
     CONFIG_PATH = 'stepper_config.json'
 
     DEFAULT_CONFIG = {
@@ -57,6 +57,14 @@ class Stepper:
                                     cls.DELAY)
         return cls._INSTANCE
 
+    def my_callback(self, channel):
+        print("button pressed")
+        data_container.DataContainer.get_instance().q.put("btn_pressed")
+        if self.allowed is True:
+            self._scheduled_steps = 0
+            self.allowed = False
+            self.reset()
+
     def __init__(self, mode, pin1, pin2, pin3, pin4, pin_emergency_stop, delay=None):
         GPIO.setmode(GPIO.BCM)
         self.mode = mode
@@ -66,7 +74,8 @@ class Stepper:
             GPIO.setup(pin, GPIO.OUT)
             GPIO.output(pin, 0)
         self.pin_emergency_stop = pin_emergency_stop
-        GPIO.setup(pin_emergency_stop, GPIO.IN)
+        GPIO.setup(pin_emergency_stop, GPIO.IN, pull_up_down = GPIO.PUD_UP)
+        GPIO.add_event_detect(pin_emergency_stop, GPIO.FALLING, callback=self.my_callback)
 
         self.allowed = True
         self._scheduled_steps = 0
@@ -87,10 +96,10 @@ class Stepper:
 
         t1 = threading.Thread(target=self.loop)
         t1.start()
-        t2 = threading.Thread(target=self.emergency_stop_handler)
-        t2.start()
         t3 = threading.Thread(target=self.config_save_loop)
         t3.start()
+
+
 
     def config_save_loop(self):
         while True:
@@ -189,7 +198,7 @@ class Stepper:
     @scheduled_steps.setter
     def scheduled_steps(self, new_value):
         self._step_mode = True
-        self._scheduled_steps = new_value
+        self._scheduled_steps += new_value
 
     def emergency_stop_handler(self):  # sprawdzic z guzikiem
         while (True):
@@ -203,9 +212,11 @@ class Stepper:
     def loop(self):
         while True:
             if self.scheduled_steps == 0 or self.allowed is False:
+                data_container.DataContainer.get_instance().sensor_lock = False
                 time.sleep(0.5)
                 self.reset()
             elif self.allowed:
+                data_container.DataContainer.get_instance().sensor_lock = True
                 self.mv_four_steps()
 
     def mv_four_steps(self):

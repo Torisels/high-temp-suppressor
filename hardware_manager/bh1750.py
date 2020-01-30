@@ -5,7 +5,7 @@ from .pin_config import config
 from smbus2 import smbus2
 import time
 import threading
-
+from . import data_container
 
 class BH1750:
     """Singleton model section"""
@@ -56,7 +56,10 @@ class BH1750:
 
     def loop(self):
         while True:
-            self._value = round(self.measure_high_res2(), 2)
+            if not data_container.DataContainer.get_instance().sensor_lock:
+                self._value = round(self.measure_low_res(), 2)
+            else:
+                time.sleep(2)
 
     def _set_mode(self, mode):
         self.mode = mode

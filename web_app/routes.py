@@ -1,17 +1,35 @@
-from flask import render_template, send_from_directory
+from flask import render_template, send_from_directory, Response, request
 from web_app import app
 from hardware_manager import step
 from hardware_manager import dht
 from hardware_manager import bh1750
 import json
 import random
+from queue import Queue
+
+
+from hardware_manager import data_container
+
+def event_stream():
+    while True:
+        message = data_container.DataContainer.get_instance().q.get(True)
+        print("Sending {}".format(message))
+        yield "data: {}\n\n".format(message)
+
+@app.route('/api/stream')
+def stream():
+    return Response(event_stream(), mimetype="text/event-stream")
+
+# @app.route('/api/post', methods=['GET'])
+# def api_parse_sentence():
+#     queue.put(request.args.get('sentence'))
+#     return "OK"
 
 @app.route("/")
 @app.route("/home")
 def home():
     return render_template('index.xhtml', temp_1=dht.DHTSensor.get_instance("indoor").temp,
                            hum_1=dht.DHTSensor.get_instance("indoor").humid)
-
 
 
 @app.route('/api/sensors')
@@ -22,6 +40,7 @@ def sensors():  # lux.luminance
     lux_2 = bh1750.BH1750.get_instance("outdoor")
     data = {"indoor": {"luminance": lux_1.luminance, "temperature": dht_1.temp, "humidity": dht_1.humid},
             "outdoor": {"luminance": lux_2.luminance, "temperature": dht_2.temp, "humidity": dht_2.humid}}
+
     return json.dumps(data)
 
 
@@ -89,14 +108,14 @@ def set_status(val):
     return json.dumps({"success": True, "value": step.Stepper.get_instance().allowed})
 
 
-@app.route('/test/api/sensors')
-def test_sensors():
-    dht_1_t = random.randint(20, 30)
-    dht_1_h = random.randint(40, 60)
-    dht_2_t = random.randint(15, 22)
-    dht_2_h = random.randint(50, 65)
-    lux_1 = random.randrange(3, 100)
-    lux_2 = random.randrange(50, 100)
-    data = {"indoor": {"luminance": lux_1, "temperature": dht_1_t, "humidity": dht_1_h},
-            "outdoor": {"luminance": lux_2, "temperature": dht_2_t, "humidity": dht_2_h}}
-    return json.dumps(data)
+# @app.route('/test/api/sensors')
+# def test_sensors():
+#     dht_1_t = random.randint(20, 30)
+#     dht_1_h = random.randint(40, 60)
+#     dht_2_t = random.randint(15, 22)
+#     dht_2_h = random.randint(50, 65)
+#     lux_1 = random.randrange(3, 100)
+#     lux_2 = random.randrange(50, 100)
+#     data = {"indoor": {"luminance": lux_1, "temperature": dht_1_t, "humidity": dht_1_h},
+#             "outdoor": {"luminance": lux_2, "temperature": dht_2_t, "humidity": dht_2_h}}
+#     return json.dumps(data)

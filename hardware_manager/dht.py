@@ -3,7 +3,7 @@ import time
 import RPi.GPIO as GPIO
 import threading
 from .pin_config import config
-
+from . import data_container
 
 class DHTSensor:
     _INSTANCES = {"indoor": None, "outdoor": None}
@@ -34,7 +34,8 @@ class DHTSensor:
 
     def loop(self):
         while True:
-            humid, temp = dht.read(dht.DHT11, self.data_pin)
-            self._humid = humid if humid else self._humid
-            self._temp = temp if temp else self._temp
+            if not data_container.DataContainer.get_instance().sensor_lock:
+                humid, temp = dht.read(dht.DHT11, self.data_pin)
+                self._humid = humid if humid else self._humid
+                self._temp = temp if temp else self._temp
             time.sleep(self.POLL_TIME)
