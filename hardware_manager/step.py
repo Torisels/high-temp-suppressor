@@ -39,7 +39,7 @@ class Stepper:
     PIN4 = 21
     PIN_EMERGENCY_STOP = 27
     EMERGENCY_STOP_DELAY = 0.1  # seconds
-    DELAY = 2.5
+    DELAY = 3
     CONFIG_PATH = 'stepper_config.json'
 
     DEFAULT_CONFIG = {
