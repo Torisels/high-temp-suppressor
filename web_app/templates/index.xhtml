@@ -15,9 +15,10 @@
 
 <body class="text-center flex-shrink-1">
 <nav class="navbar navbar-dark bg-dark">
-    <span class="navbar-brand" >Smart Window Blind</span>
+    <span class="navbar-brand">Smart Window Blind</span>
 </nav>
-<div class="alert alert-warning alert-dismissible fade " id="alert_calib_success" role="alert" style="margin: 0.3%; display: none">
+<div class="alert alert-warning alert-dismissible fade " id="alert_calib_success" role="alert"
+     style="margin: 0.3%; display: none">
     <strong>Holy guacamole!</strong> You should check in on some of those fields below.
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
@@ -59,10 +60,19 @@
                     <strong> Stepper motor control:</strong>
                 </div>
                 <div class="card-body">
-                    <p class="card-text text-left">This is manual stepper control for window blind. Select `Open` or `Close` to fully open/close the blind. <br/><br/>
-                        Use calibration if needed:
+                    <p class="card-text text-left">This is manual stepper control for window blind. Select `Open` or
+                        `Close` to fully open/close the blind. <br/><br/>
+                        Choose mode or click Calibration if needed:
                     </p>
-                    <button type="button" class="btn btn-dark " id="btn_calibration" >Calibration</button>
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="btn btn-dark  btn_mode">
+                            <input type="radio" name="options" id="btn_mode_auto" autocomplete="off"> Auto</input>
+                        </label>
+                        <label class="btn btn-dark btn_mode">
+                            <input type="radio" name="options" id="btn_mode_manual" autocomplete="off"> Manual</input>
+                        </label>
+                    </div>
+                    <button type="button" class="btn btn-dark " id="btn_calibration">Calibration</button>
                 </div>
 
                 <ul class="list-group list-group-flush">
@@ -72,14 +82,15 @@
 
                         <span id="ex6CurrentSliderValLabel">Move to: <span id="ex6SliderVal">50</span>%</span>
                         <br/>
-                        <input id="ex6" type="text" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="50" />
+                        <input id="ex6" type="text" data-slider-min="0" data-slider-max="100" data-slider-step="1"
+                               data-slider-value="50"/>
 
 
                     </li>
 
                     <li class="list-group-item">
-                        <button type="button" class="btn btn-dark " id="btn_open" >Open</button>
-                        <button type="button" class="btn btn-dark " id="btn_move" >Move</button>
+                        <button type="button" class="btn btn-dark " id="btn_open">Open</button>
+                        <button type="button" class="btn btn-dark " id="btn_move">Move</button>
                         <button type="button" class="btn btn-dark " id="btn_close">Close</button>
                         <button type="button" class="btn btn-danger " id="btn_toggle">Disable</button>
 
@@ -93,20 +104,21 @@
                     <strong>Airing decision system:</strong>
                 </div>
                 <div class="card-body">
-                <p class="card-text text-left">Apparent temperature is located in given optimal temperature range. If you want to increase temperature in the room, open the window.</p>
-            </div>
+                    <p class="card-text text-left">Apparent temperature is located in given optimal temperature range.
+                        If you want to increase temperature in the room, open the window.</p>
+                </div>
             </div>
         </div>
     </div>
     <div class="row justify-content-start" id="div_calibration" style="padding-top: 30px; display: none;">
         <div class="col col-sm-1"></div>
-        <div class="col-sm-6" >
+        <div class="col-sm-6">
 
-                <div class="card bg-light text-left" style="padding-top: 20px; margin-bottom: 30px" >
-                    <div class="container">
-                        <div class="card-header bg-light text-dark" style="margin-bottom: 15px">
-                            <strong>Calibration wizard:</strong>
-                        </div >
+            <div class="card bg-light text-left" style="padding-top: 20px; margin-bottom: 30px">
+                <div class="container">
+                    <div class="card-header bg-light text-dark" style="margin-bottom: 15px">
+                        <strong>Calibration wizard:</strong>
+                    </div>
                     <div class="alert alert-primary" style="margin-top: 5px; margin-bottom: 5px">
                         <strong>Information:</strong> <span id="information_box">Please move window blinds to horizontal position.
                       Then click `next step`.
@@ -117,33 +129,33 @@
                     </div>
 
                     <div class="btn-group" style="margin-bottom: 10px">
-                        <button type="button" class="btn btn-success bbb" id="btn_plus" >+</button>
-                        <button type="button" class="btn btn-success bbb" id="btn_minus" >-</button>
+                        <button type="button" class="btn btn-success bbb" id="btn_plus">+</button>
+                        <button type="button" class="btn btn-success bbb" id="btn_minus">-</button>
                     </div>
-                        <div class="row" style="margin:10px 0px">
+                    <div class="row" style="margin:10px 0px">
                         <span class="font-weight-bolder" id="scale_value">Choose scale:</span>
-                        </div>
-                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    </div>
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
                         <label class="btn btn-primary  btn_scale">
-                            <input type="radio" name="options" id="btn_scale_1"  autocomplete="off" > 1
+                            <input type="radio" name="options" id="btn_scale_1" autocomplete="off"> 1
                         </label>
                         <label class="btn btn-primary btn_scale">
                             <input type="radio" name="options" id="btn_scale_2" autocomplete="off"> 10
                         </label>
                         <label class="btn btn-primary btn_scale active">
-                            <input type="radio" name="options" id="btn_scale_3"  autocomplete="off"> 100
+                            <input type="radio" name="options" id="btn_scale_3" autocomplete="off"> 100
                         </label>
-
-
                     </div>
 
 
                     <div class="row" style="margin:10px 0px">
-                    <div class="btn-group"  >
-                        <button type="button" class="btn btn-dark step" id="previous" >previous step</button>
-                        <button type="button" class="btn btn-dark step" id="next" >next step</button>
-                        <button type="button" class="btn btn-success step" id="btn_complete" disabled="disabled">Complete!</button>
-                    </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-dark step" id="previous">previous step</button>
+                            <button type="button" class="btn btn-dark step" id="next">next step</button>
+                            <button type="button" class="btn btn-success step" id="btn_complete" disabled="disabled">
+                                Complete!
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
