@@ -40,8 +40,10 @@ def sensors():  # lux.luminance
     lux_2 = bh1750.BH1750.get_instance("outdoor")
     data = {"indoor": {"luminance": lux_1.luminance, "temperature": dht_1.temp, "humidity": dht_1.humid},
             "outdoor": {"luminance": lux_2.luminance, "temperature": dht_2.temp, "humidity": dht_2.humid}}
-
-    return json.dumps(data)
+    resp = Response()
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    resp.set_data(json.dumps(data))
+    return resp
 
 
 @app.route('/api/stepper/get_status')
