@@ -1,6 +1,6 @@
 "use strict";
-const API_BASE_URL = "http://192.168.1.20:8081/api";
-// const API_BASE_URL = "/api";
+// const API_BASE_URL = "http://192.168.43.109:8081/api";
+const API_BASE_URL = "/api";
 
 let stepper = null;
 
@@ -22,9 +22,10 @@ let stepper = null;
     if (message.msg)
         document.getElementById("airing").innerHTML = message.msg;
 
-    let evtSource = new EventSource(API_BASE_URL + "/msg");
+    let evtSource = new EventSource(API_BASE_URL + "/two");
     evtSource.onmessage = (e) => {
         message = JSON.parse(e.data);
+        console.log(message);
         if(message.msg)
         {
             document.getElementById("airing").innerHTML = message.msg;

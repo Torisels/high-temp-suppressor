@@ -22,7 +22,7 @@ def event_stream():
 @app.route('/api/stream')
 def stream():
     resp = Response(event_stream(), mimetype="text/event-stream")
-    resp.headers['Access-Control-Allow-Origin'] = '*'
+    # resp.headers['Access-Control-Allow-Origin'] = '*'
     return resp
 
 
@@ -35,10 +35,10 @@ def msg_stream():
         yield "data: {}\n\n".format(message)
 
 
-@app.route('/api/msg')
+@app.route('/api/two')
 def ms_stream():
     resp = Response(msg_stream(), mimetype="text/event-stream")
-    resp.headers['Access-Control-Allow-Origin'] = '*'
+    # resp.headers['Access-Control-Allow-Origin'] = '*'
     return resp
 
 
@@ -60,8 +60,25 @@ def message():
 @app.route("/")
 @app.route("/home")
 def home():
-    return render_template('index.xhtml', temp_1=123,
-                           hum_1=123)
+    dht_1 = dht.DHTSensor.get_instance("indoor")
+    dht_2 = dht.DHTSensor.get_instance("outdoor")
+    lux_1 = bh1750.BH1750.get_instance("indoor")
+    lux_2 = bh1750.BH1750.get_instance("outdoor")
+    data = {"indoor": {"luminance": lux_1.luminance, "temperature": dht_1.temp, "humidity": dht_1.humid},
+            "outdoor": {"luminance": lux_2.luminance, "temperature": dht_2.temp, "humidity": dht_2.humid}}
+
+    for key, val in data.items():
+        for k, v in val.items():
+            if v is None:
+                v = "N/A"
+            elif k is not "luminance":
+                v = int(round(v))
+    if step.Stepper.get_instance().max_position != 0:
+        current_val = int(round(step.Stepper.get_instance().current_position*100/step.Stepper.get_instance().max_position))
+    else :
+        current_val = 0
+
+    return render_template('index.xhtml', g=data, status=step.Stepper.get_instance().allowed, cur_val = current_val)
 
 
 @app.route('/api/sensors')

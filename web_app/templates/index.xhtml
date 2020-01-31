@@ -41,9 +41,9 @@
                     <strong> Indoor sensors:</strong>
                 </div>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item ">Temperature: <span class="indoor temperature">N/A</span>&#176;C</li>
-                    <li class="list-group-item ">Humidity: <span class="indoor humidity">N/A</span>%</li>
-                    <li class="list-group-item ">Luminance: <span class="indoor luminance">N/A</span>lx</li>
+                    <li class="list-group-item ">Temperature: <span class="indoor temperature">{{ g['indoor']['temperature'] }}</span>&#176;C</li>
+                    <li class="list-group-item ">Humidity: <span class="indoor humidity">{{ g['indoor']['humidity'] }}</span>%</li>
+                    <li class="list-group-item ">Luminance: <span class="indoor luminance">{{ g['indoor']['luminance'] }}</span>lx</li>
                 </ul>
             </div>
         </div>
@@ -53,9 +53,9 @@
                     <strong>Outdoor sensors:</strong>
                 </div>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item ">Temperature: <span class="outdoor temperature">N/A</span>&#176;C</li>
-                    <li class="list-group-item">Humidity: <span class="outdoor humidity">N/A</span>%</li>
-                    <li class="list-group-item">Luminance: <span class="outdoor luminance">N/A</span>lx</li>
+                    <li class="list-group-item ">Temperature: <span class="outdoor temperature">{{ g['outdoor']['temperature'] }}</span>&#176;C</li>
+                    <li class="list-group-item">Humidity: <span class="outdoor humidity">{{ g['outdoor']['humidity'] }}</span>%</li>
+                    <li class="list-group-item">Luminance: <span class="outdoor luminance">{{ g['outdoor']['luminance'] }}</span>lx</li>
                 </ul>
             </div>
         </div>
@@ -83,9 +83,15 @@
                 </div>
 
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item bg-light">Status: <span id="stepper_status"
-                                                                       class="text-danger ">Enabled</span></li>
-                    <li class="list-group-item bg-light">Current state: <span id="stepper_val">55</span>% closed
+                    <li class="list-group-item bg-light">Status:
+
+                        {% if status %}
+                        <span id="stepper_status" class="text-success ">Enabled</span></li>
+                        {% else %}
+                        <span id="stepper_status" class="text-danger ">Disabled</span></li>
+                        {% endif %}
+
+                    <li class="list-group-item bg-light">Current state: <span id="stepper_val">{{ cur_val }}</span>% closed
 
                     </li>
                     <li class="list-group-item ">
