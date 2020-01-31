@@ -54,7 +54,7 @@ class Stepper {
             document.getElementById("ex6SliderVal").textContent = value.newValue;
         });
 
-
+        this.mode = "man";
         let information = JSON.parse(info);
         this.status = information.status;
         this.calibration = false;
@@ -65,6 +65,21 @@ class Stepper {
         this.url = url + "/stepper";
         this.slider.setValue(this.current_pos);
         this.scheduled_pos = -1;
+        console.log("here");
+
+        document.getElementById("btn_mode_auto").onclick = (ev)=>{
+            console.log("here");
+            this.mode_btn_clicked("Auto");
+            this.mode = "aut";
+            this.toggle_buttons(false);
+        };
+
+        document.getElementById("btn_mode_manual").onclick = (ev)=>{
+            console.log("her2e");
+            this.mode_btn_clicked("Manual");
+            this.mode = "man";
+            this.toggle_buttons(true);
+        };
 
         this.btn_toggle = document.getElementById("btn_toggle");
         this.btn_toggle.onclick = (event) => this.toggle_button_clicked(event);
@@ -124,6 +139,15 @@ class Stepper {
         this.slider.setValue(this.calculate_percentage());
         document.getElementById("ex6SliderVal").textContent = this.calculate_percentage();
 
+    }
+
+
+    mode_btn_clicked(mode)
+    {
+        if (mode ==="Auto")
+        {
+
+        }
     }
 
     change_btn_toggle(state) {
@@ -199,6 +223,18 @@ class Stepper {
             this.slider.setValue(100);
             this.move_btn_clicked(100);
         }
+    }
+
+    move_by_val(val)
+    {
+
+        if (this.mode==="aut" && this.calibration===false)
+        {
+            val = Math.round((val / 100) * this.max_pos);
+            this.scheduled_pos = val;
+            makeRequest("GET", this.url + "/set_position/" + val)
+        }
+
     }
 
     toggle_buttons(enable) {

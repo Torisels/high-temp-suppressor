@@ -1,6 +1,6 @@
 "use strict";
-// const API_BASE_URL = "http://192.168.1.20:8081/api";
-const API_BASE_URL = "/api";
+const API_BASE_URL = "http://192.168.1.20:8081/api";
+// const API_BASE_URL = "/api";
 
 let stepper = null;
 
@@ -58,6 +58,7 @@ let stepper = null;
 
 async function update_sensors() {
     try {
+
         let result = await makeRequest("GET", API_BASE_URL + "/sensors");
         let data = JSON.parse(result);
 
@@ -70,6 +71,25 @@ async function update_sensors() {
                     el.innerHTML = sensor_value
             }
         }
+
+        if (stepper.mode === "aut")
+        {
+            let l1 = data.indoor.luminance;
+            let l2 = data.outdoor.luminance;
+
+            if (Math.abs(l1 - l2) < 1000)
+            {
+                stepper.move_by_val( 50);
+            }
+            else if ((l2-l1)>=1000)
+            {
+                stepper.move_by_val(100);
+            }
+            else{
+                stepper.move_by_val(0);
+            }
+        }
+
     }
     catch (e) {
         // console.log(e);
