@@ -60,8 +60,8 @@ def message():
 @app.route("/")
 @app.route("/home")
 def home():
-    return render_template('index.xhtml', temp_1=dht.DHTSensor.get_instance("indoor").temp,
-                           hum_1=dht.DHTSensor.get_instance("indoor").humid)
+    return render_template('index.xhtml', temp_1=123,
+                           hum_1=123)
 
 
 @app.route('/api/sensors')

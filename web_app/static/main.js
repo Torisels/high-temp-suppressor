@@ -1,5 +1,6 @@
 "use strict";
-const API_BASE_URL = "http://192.168.1.20:8081/api";
+// const API_BASE_URL = "http://192.168.1.20:8081/api";
+const API_BASE_URL = "/api";
 
 let stepper = null;
 
