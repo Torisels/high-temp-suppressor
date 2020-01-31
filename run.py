@@ -2,6 +2,7 @@ from web_app import app
 from hardware_manager.step import Stepper
 from hardware_manager.dht import DHTSensor
 from hardware_manager.bh1750 import BH1750
+from hardware_manager.window import Window
 
 
 def run():
@@ -10,6 +11,8 @@ def run():
     DHTSensor.get_instance("outdoor")
     BH1750.get_instance("indoor")
     BH1750.get_instance("outdoor")
+    Window.get_instance()
+
     app.run("0.0.0.0", port=8081, threaded=True)
 
 

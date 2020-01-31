@@ -3,22 +3,54 @@ from web_app import app
 from hardware_manager import step
 from hardware_manager import dht
 from hardware_manager import bh1750
+from hardware_manager import window
 import json
 import random
 from queue import Queue
 
-
 from hardware_manager import data_container
+
 
 def event_stream():
     while True:
         message = data_container.DataContainer.get_instance().q.get(True)
+        message = json.dumps(message)
         print("Sending {}".format(message))
         yield "data: {}\n\n".format(message)
 
+
 @app.route('/api/stream')
 def stream():
-    return Response(event_stream(), mimetype="text/event-stream")
+    resp = Response(event_stream(), mimetype="text/event-stream")
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    return resp
+
+
+def msg_stream():
+    while True:
+        message = data_container.DataContainer.get_instance().info.get(True)
+        message = {"msg": message}
+        message = json.dumps(message)
+        print("Sending {}".format(message))
+        yield "data: {}\n\n".format(message)
+
+
+@app.route('/api/msg')
+def ms_stream():
+    resp = Response(msg_stream(), mimetype="text/event-stream")
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    return resp
+
+
+@app.route('/api/message')
+def message():
+    message = window.Window.get_instance().last_value
+    message = json.dumps({"msg": message})
+    resp = Response()
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    resp.set_data(message)
+    return resp
+
 
 # @app.route('/api/post', methods=['GET'])
 # def api_parse_sentence():
@@ -48,13 +80,17 @@ def sensors():  # lux.luminance
 
 @app.route('/api/stepper/get_status')
 def status():
-    msg = json.dumps({"status": step.Stepper.get_instance().allowed,
+    msg = json.dumps({"status": step.Stepper.get_instance()._allowed,
                       "steps": step.Stepper.get_instance().scheduled_steps,
                       "current_position": step.Stepper.get_instance().current_position,
                       "scheduled_position": step.Stepper.get_instance().scheduled_position,
                       "min_position": step.Stepper.get_instance().min_position,
                       "max_position": step.Stepper.get_instance().max_position})
-    return msg
+
+    resp = Response()
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    resp.set_data(msg)
+    return resp
 
 
 @app.route('/api/stepper/set_position/<pos>')
@@ -65,7 +101,11 @@ def new_position(pos):
         msg = json.dumps({"success": True, "value": step.Stepper.get_instance().scheduled_position})
     except ValueError:
         msg = json.dumps({"success": False, "value": None})
-    return msg
+
+    resp = Response()
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    resp.set_data(msg)
+    return resp
 
 
 @app.route('/api/stepper/set_max_position/<pos>')
@@ -76,7 +116,10 @@ def set_max_position(pos):
         msg = json.dumps({"success": True, "value": step.Stepper.get_instance().max_position})
     except ValueError:
         msg = json.dumps({"success": False, "value": None})
-    return msg
+    resp = Response()
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    resp.set_data(msg)
+    return resp
 
 
 @app.route('/api/stepper/set_steps/<st>')
@@ -87,7 +130,11 @@ def set_steps(st):
         msg = json.dumps({"success": True, "value": step.Stepper.get_instance().scheduled_steps})
     except ValueError:
         msg = json.dumps({"success": False, "value": None})
-    return msg
+
+    resp = Response()
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    resp.set_data(msg)
+    return resp
 
 
 @app.route('/api/stepper/set_current_position/<pos>')
@@ -98,17 +145,25 @@ def set_current_position(pos):
         msg = json.dumps({"success": True, "value": step.Stepper.get_instance().current_position})
     except ValueError:
         msg = json.dumps({"success": False, "value": None})
-    return msg
+
+    resp = Response()
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    resp.set_data(msg)
+    return resp
 
 
 @app.route('/api/stepper/set_status/<int:val>')
 def set_status(val):
     try:
         step.Stepper.get_instance().allowed = bool(int(val))
+        data = json.dumps({"success": True, "value": step.Stepper.get_instance().allowed})
     except (ValueError, TypeError):
-        return json.dumps({"success": False, "value": None})
-    return json.dumps({"success": True, "value": step.Stepper.get_instance().allowed})
+        data = json.dumps({"success": False, "value": None})
 
+    resp = Response()
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    resp.set_data(data)
+    return resp
 
 # @app.route('/test/api/sensors')
 # def test_sensors():

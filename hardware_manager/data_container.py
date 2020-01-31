@@ -14,3 +14,4 @@ class DataContainer:
     def __init__(self):
         self.q = queue.Queue()
         self.sensor_lock = True
+        self.info = queue.Queue()

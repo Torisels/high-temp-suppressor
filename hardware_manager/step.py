@@ -58,11 +58,15 @@ class Stepper:
         return cls._INSTANCE
 
     def my_callback(self, channel):
-        print("button pressed")
-        data_container.DataContainer.get_instance().q.put("btn_pressed")
-        if self.allowed is True:
+        data = {"status": "pressed"}
+        data_container.DataContainer.get_instance().q.put(data)
+        if self._allowed is True:
+            data["status"] = False
+            data["current_pos"] = self._current_position
+            data_container.DataContainer.get_instance().q.put(data)
             self._scheduled_steps = 0
-            self.allowed = False
+            self._scheduled_position = self._current_position
+            self._allowed = False
             self.reset()
 
     def __init__(self, mode, pin1, pin2, pin3, pin4, pin_emergency_stop, delay=None):
@@ -77,12 +81,13 @@ class Stepper:
         GPIO.setup(pin_emergency_stop, GPIO.IN, pull_up_down = GPIO.PUD_UP)
         GPIO.add_event_detect(pin_emergency_stop, GPIO.FALLING, callback=self.my_callback)
 
-        self.allowed = True
+
         self._scheduled_steps = 0
         self._step_mode = False  # True - scheduled steps does not affect current position
         self._max_position = 0
         self._min_position = 0
         self._current_position = 0
+        self._allowed = True
 
         try:
             self._read_config()
@@ -140,6 +145,16 @@ class Stepper:
     def _save_config(self, path=CONFIG_PATH):
         with open(path, 'w') as f:
             json.dump(self._get_config_dict(), f)
+
+    @property
+    def allowed(self):
+        return self._allowed
+
+    @allowed.setter
+    def allowed(self, al):
+        self._scheduled_steps = 0
+        self._scheduled_position = self._current_position
+        self._allowed = al
 
     @property
     def max_position(self):
@@ -205,24 +220,25 @@ class Stepper:
             time.sleep(self.EMERGENCY_STOP_DELAY)
             emergency_stop_button_down = bool(GPIO.input(self.pin_emergency_stop))
             if emergency_stop_button_down:
-                if self.allowed is True:
-                    self.allowed = False
+                if self._allowed is True:
+                    self._allowed = False
                     self.reset()
 
     def loop(self):
         while True:
-            if self.scheduled_steps == 0 or self.allowed is False:
+            if self.scheduled_steps == 0 or self._allowed is False:
                 data_container.DataContainer.get_instance().sensor_lock = False
                 time.sleep(0.5)
                 self.reset()
-            elif self.allowed:
+            elif self._allowed:
                 data_container.DataContainer.get_instance().sensor_lock = True
+
                 self.mv_four_steps()
 
     def mv_four_steps(self):
         direction = 1 if self.scheduled_steps > 0 else -1
         bits_list = self.mode[::direction]
-        if self.allowed:
+        if self._allowed:
             for bits in bits_list:
                 for bit, pin in zip(bits, self.pins):
                     GPIO.output(pin, bit)
@@ -231,6 +247,8 @@ class Stepper:
                 self._scheduled_steps -= direction
             else:
                 self._current_position += direction
+                data_container.DataContainer.get_instance().q.put(
+                    {"status": True, "current_pos": self._current_position})
         # else:
         #    self.reset()
         self.reset()

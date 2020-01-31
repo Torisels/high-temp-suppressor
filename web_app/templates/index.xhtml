@@ -9,7 +9,7 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap.min.css') }}"/>
 
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap-slider.css') }}"/>
-
+    <script type="text/javascript" src="{{ url_for('static', filename='bootstrap-slider.js') }}"></script>
     <link rel="icon" type="image/ico" href="{{ url_for('static', filename='favicon.ico') }}"/>
 </head>
 
@@ -17,9 +17,16 @@
 <nav class="navbar navbar-dark bg-dark">
     <span class="navbar-brand">Smart Window Blind</span>
 </nav>
-<div class="alert alert-warning alert-dismissible fade " id="alert_calib_success" role="alert"
+<div class="alert alert-success alert-dismissible fade " id="alert_calib_success" role="alert"
      style="margin: 0.3%; display: none">
-    <strong>Holy guacamole!</strong> You should check in on some of those fields below.
+    <strong>Success:</strong> Calibration complete!
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="alert alert-danger alert-dismissible fade " id="alert_stepper_disabled" role="alert"
+     style="margin: 0.3%; display: none">
+    <strong>Warning:</strong> Stepper motor has been disabled!
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
     </button>
@@ -36,7 +43,7 @@
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item ">Temperature: <span class="indoor temperature">N/A</span>&#176;C</li>
                     <li class="list-group-item ">Humidity: <span class="indoor humidity">N/A</span>%</li>
-                    <li class="list-group-item " >Luminance: <span class="indoor luminance">N/A</span>lx</li>
+                    <li class="list-group-item ">Luminance: <span class="indoor luminance">N/A</span>lx</li>
                 </ul>
             </div>
         </div>
@@ -62,13 +69,13 @@
                 <div class="card-body">
                     <p class="card-text text-left">This is manual stepper control for window blind. Select `Open` or
                         `Close` to fully open/close the blind. <br/><br/>
-                        Choose mode or click Calibration if needed:
+                        Choose mode or use Calibration if needed:
                     </p>
                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
                         <label class="btn btn-dark  btn_mode">
                             <input type="radio" name="options" id="btn_mode_auto" autocomplete="off"> Auto</input>
                         </label>
-                        <label class="btn btn-dark btn_mode">
+                        <label class="btn btn-dark btn_mode active">
                             <input type="radio" name="options" id="btn_mode_manual" autocomplete="off"> Manual</input>
                         </label>
                     </div>
@@ -76,22 +83,25 @@
                 </div>
 
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item bg-light">Status: <span class="text-success">Enabled</span></li>
-                    <li class="list-group-item bg-light">Current state: 55% closed</li>
+                    <li class="list-group-item bg-light">Status: <span id="stepper_status"
+                                                                       class="text-danger ">Enabled</span></li>
+                    <li class="list-group-item bg-light">Current state: <span id="stepper_val">55</span>% closed
+
+                    </li>
                     <li class="list-group-item ">
 
                         <span id="ex6CurrentSliderValLabel">Move to: <span id="ex6SliderVal">50</span>%</span>
                         <br/>
                         <input id="ex6" type="text" data-slider-min="0" data-slider-max="100" data-slider-step="1"
-                               data-slider-value="50"/>
+                               data-slider-value="50" style="width: 100%"/>
 
 
                     </li>
 
                     <li class="list-group-item">
-                        <button type="button" class="btn btn-dark " id="btn_open">Open</button>
-                        <button type="button" class="btn btn-dark " id="btn_move">Move</button>
-                        <button type="button" class="btn btn-dark " id="btn_close">Close</button>
+                        <button type="button" class="btn btn-dark toggle" id="btn_open">Open</button>
+                        <button type="button" class="btn btn-dark toggle" id="btn_move">Move</button>
+                        <button type="button" class="btn btn-dark toggle " id="btn_close">Close</button>
                         <button type="button" class="btn btn-danger " id="btn_toggle">Disable</button>
 
                     </li>
@@ -104,7 +114,7 @@
                     <strong>Airing decision system:</strong>
                 </div>
                 <div class="card-body">
-                    <p class="card-text text-left">Apparent temperature is located in given optimal temperature range.
+                    <p class="card-text text-left" id="airing">Apparent temperature is located in given optimal temperature range.
                         If you want to increase temperature in the room, open the window.</p>
                 </div>
             </div>
@@ -137,13 +147,13 @@
                     </div>
                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
                         <label class="btn btn-primary  btn_scale">
-                            <input type="radio" name="options" id="btn_scale_1" autocomplete="off"> 1
+                            <input type="radio" name="options" id="btn_scale_1" autocomplete="off"> 1</input>
                         </label>
                         <label class="btn btn-primary btn_scale">
-                            <input type="radio" name="options" id="btn_scale_2" autocomplete="off"> 10
+                            <input type="radio" name="options" id="btn_scale_2" autocomplete="off"> 10</input>
                         </label>
                         <label class="btn btn-primary btn_scale active">
-                            <input type="radio" name="options" id="btn_scale_3" autocomplete="off"> 100
+                            <input type="radio" name="options" id="btn_scale_3" autocomplete="off"> 100</input>
                         </label>
                     </div>
 
@@ -152,6 +162,7 @@
                         <div class="btn-group">
                             <button type="button" class="btn btn-dark step" id="previous">previous step</button>
                             <button type="button" class="btn btn-dark step" id="next">next step</button>
+                            <button type="button" class="btn btn-dark step" id="manually">set manually</button>
                             <button type="button" class="btn btn-success step" id="btn_complete" disabled="disabled">
                                 Complete!
                             </button>
@@ -167,7 +178,9 @@
 </div>
 <script type="text/javascript" src="{{ url_for('static', filename='jquery-3.4.1.min.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='bootstrap-slider.js') }}"></script>
+
+
+<script type="text/javascript" src="{{ url_for('static', filename='stepper.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='calibration.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='main.js') }}"></script>
 </body>
