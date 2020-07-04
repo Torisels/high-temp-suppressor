@@ -1,0 +1,22 @@
+/*[type=button]:not(:disabled), [type=reset]:not(:disabled), [type=submit]:not(:disabled), button:not(:disabled) {*/
+/*}*/
+
+button#btn_minus, button#btn_plus{
+    box-shadow: none;
+}
+
+label.shadshad{
+    box-shadow: none;
+}
+
+
+
+
+body {
+    background-color: #6f16e6;
+}
+
+
+label.btn.btn-primary {
+    box-shadow: none;
+}
